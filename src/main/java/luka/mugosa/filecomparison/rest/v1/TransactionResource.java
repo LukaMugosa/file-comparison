@@ -1,5 +1,6 @@
 package luka.mugosa.filecomparison.rest.v1;
 
+import luka.mugosa.filecomparison.domain.dto.response.ReconciliationResponse;
 import luka.mugosa.filecomparison.service.impl.TransactionServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +18,12 @@ public class TransactionResource {
     }
 
     @PostMapping("/reconcile-transactions")
-    public ResponseEntity<?> compareFiles(
+    public ResponseEntity<ReconciliationResponse> compareFiles(
             @RequestParam("file1") MultipartFile file1,
             @RequestParam("file2") MultipartFile file2) {
 
-        transactionService.reconcileTransaction(file1, file2);
+        final ReconciliationResponse reconciliationResponse = transactionService.reconcileTransaction(file1, file2);
 
-        return ResponseEntity.ok(new Object());
+        return ResponseEntity.ok(reconciliationResponse);
     }
 }

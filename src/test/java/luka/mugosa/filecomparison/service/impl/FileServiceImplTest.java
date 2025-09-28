@@ -2,11 +2,12 @@ package luka.mugosa.filecomparison.service.impl;
 
 import luka.mugosa.filecomparison.constant.TransactionConstants;
 import luka.mugosa.filecomparison.domain.dto.TransactionDto;
-import luka.mugosa.filecomparison.domain.dto.TransactionType;
+import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
 import luka.mugosa.filecomparison.domain.exception.EmptyFileException;
 import luka.mugosa.filecomparison.domain.exception.FileProcessingException;
 import luka.mugosa.filecomparison.domain.exception.LineParsingException;
 import luka.mugosa.filecomparison.domain.exception.MissingHeaderException;
+import luka.mugosa.filecomparison.domain.id.TransactionId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -46,7 +47,7 @@ class FileServiceImplTest {
                 .hasSize(3);
 
         final TransactionDto transaction1 = result.stream()
-                .filter(t -> "0584011808649511".equals(t.getTransactionID()))
+                .filter(t -> new TransactionId("0584011808649511").equals(t.getTransactionID()))
                 .findFirst()
                 .orElseThrow();
 
@@ -58,7 +59,7 @@ class FileServiceImplTest {
         assertThat(transaction1.getWalletReference()).isEqualTo("P_NzI2ODY2ODlfMTM4MjcwMTU2NS45MzA5");
 
         final TransactionDto transaction2 = result.stream()
-                .filter(t -> "0584011815513406".equals(t.getTransactionID()))
+                .filter(t -> new TransactionId("0584011815513406").equals(t.getTransactionID()))
                 .findFirst()
                 .orElseThrow();
 
@@ -70,7 +71,7 @@ class FileServiceImplTest {
         assertThat(transaction2.getWalletReference()).isEqualTo("P_NzI1MjA1NjZfMTM3ODczODI3Mi4wNzY5");
 
         final TransactionDto transaction3 = result.stream()
-                .filter(t -> "0084012233581869".equals(t.getTransactionID()))
+                .filter(t -> new TransactionId("0084012233581869").equals(t.getTransactionID()))
                 .findFirst()
                 .orElseThrow();
 
@@ -137,7 +138,7 @@ class FileServiceImplTest {
                 .hasSize(3);
 
         final TransactionDto transaction1 = result.stream()
-                .filter(t -> "0584011808649511".equals(t.getTransactionID()))
+                .filter(t -> new TransactionId("0584011808649511").equals(t.getTransactionID()))
                 .findFirst()
                 .orElseThrow();
 
@@ -149,7 +150,7 @@ class FileServiceImplTest {
         assertThat(transaction1.getWalletReference()).isEqualTo("P_NzI2ODY2ODlfMTM4MjcwMTU2NS45MzA5");
 
         final TransactionDto transaction2 = result.stream()
-                .filter(t -> "0584011815513406".equals(t.getTransactionID()))
+                .filter(t -> new TransactionId("0584011815513406").equals(t.getTransactionID()))
                 .findFirst()
                 .orElseThrow();
 
@@ -161,7 +162,7 @@ class FileServiceImplTest {
         assertThat(transaction2.getWalletReference()).isEqualTo("P_NzI1MjA1NjZfMTM3ODczODI3Mi4wNzY5");
 
         final TransactionDto transaction3 = result.stream()
-                .filter(t -> "0084012233581869".equals(t.getTransactionID()))
+                .filter(t -> new TransactionId("0084012233581869").equals(t.getTransactionID()))
                 .findFirst()
                 .orElseThrow();
 

@@ -1,8 +1,9 @@
 package luka.mugosa.filecomparison.service.impl;
 
 import luka.mugosa.filecomparison.constant.TransactionConstants;
+import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.domain.dto.TransactionDto;
-import luka.mugosa.filecomparison.domain.dto.TransactionType;
+import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
 import luka.mugosa.filecomparison.domain.exception.CsvColumnMismatchException;
 import luka.mugosa.filecomparison.domain.exception.EmptyFileException;
 import luka.mugosa.filecomparison.domain.exception.FileParsingException;
@@ -31,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -160,7 +162,7 @@ public class FileServiceImpl implements FileService {
 
             return new TransactionDto(
                     profileName, transactionDate, transactionAmount, transactionNarrative,
-                    transactionDescription, transactionID, transactionType, walletReference
+                    transactionDescription, new TransactionId(transactionID), transactionType, walletReference
             );
 
         } catch (FileParsingException e) {
@@ -336,5 +338,15 @@ public class FileServiceImpl implements FileService {
                     filename, duration, e);
             throw new FileProcessingException("Failed to process uploaded file: " + filename, e);
         }
+    }
+
+    @Override
+    public CompletableFuture<Set<TransactionDto>> parseFileAsync(String path) {
+        return CompletableFuture.supplyAsync(() -> parseFile(path));
+    }
+
+    @Override
+    public CompletableFuture<Set<TransactionDto>> parseFileAsync(MultipartFile file) {
+        return CompletableFuture.supplyAsync(() -> parseFile(file));
     }
 }

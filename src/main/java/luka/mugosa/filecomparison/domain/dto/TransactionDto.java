@@ -1,20 +1,23 @@
 package luka.mugosa.filecomparison.domain.dto;
 
+import luka.mugosa.filecomparison.domain.id.TransactionId;
+import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
+
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
 public class TransactionDto {
 
-    final String profileName;
-    final ZonedDateTime transactionDate;
-    final Double transactionAmount;
-    final String transactionNarrative;
-    final String transactionDescription;
-    final String transactionID;
-    final TransactionType transactionType;
-    final String walletReference;
+    private final String profileName;
+    private final ZonedDateTime transactionDate;
+    private final Double transactionAmount;
+    private final String transactionNarrative;
+    private final String transactionDescription;
+    private final TransactionId transactionID;
+    private final TransactionType transactionType;
+    private final String walletReference;
 
-    public TransactionDto(String profileName, ZonedDateTime transactionDate, Double transactionAmount, String transactionNarrative, String transactionDescription, String transactionID, TransactionType transactionType, String walletReference) {
+    public TransactionDto(String profileName, ZonedDateTime transactionDate, Double transactionAmount, String transactionNarrative, String transactionDescription, TransactionId transactionID, TransactionType transactionType, String walletReference) {
         this.profileName = profileName;
         this.transactionDate = transactionDate;
         this.transactionAmount = transactionAmount;
@@ -45,7 +48,7 @@ public class TransactionDto {
         return transactionDescription;
     }
 
-    public String getTransactionID() {
+    public TransactionId getTransactionID() {
         return transactionID;
     }
 
