@@ -7,5 +7,4 @@ import java.util.Collection;
 
 public interface ComparisonService {
     ReconciliationResponse compareData(Collection<TransactionDto> collection1, Collection<TransactionDto> collection2);
-
 }

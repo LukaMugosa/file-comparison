@@ -4,6 +4,7 @@ import luka.mugosa.filecomparison.domain.dto.TransactionDto;
 import luka.mugosa.filecomparison.domain.dto.response.ReconciliationResponse;
 import luka.mugosa.filecomparison.domain.exception.FileProcessingException;
 import luka.mugosa.filecomparison.service.FileService;
+import luka.mugosa.filecomparison.service.TransactionService;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Service
-public class TransactionServiceImpl {
+public class TransactionServiceImpl implements TransactionService {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(TransactionServiceImpl.class);
 
