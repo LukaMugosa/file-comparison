@@ -1,4 +1,4 @@
-package luka.mugosa.filecomparison.rest.advice;
+package luka.mugosa.filecomparison.rest.exceptionHandling;
 
 import luka.mugosa.filecomparison.domain.dto.response.ErrorResponseDto;
 import luka.mugosa.filecomparison.domain.enumeration.ErrorType;

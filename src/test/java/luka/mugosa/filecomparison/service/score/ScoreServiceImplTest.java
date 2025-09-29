@@ -2,7 +2,6 @@ package luka.mugosa.filecomparison.service.score;
 
 import luka.mugosa.filecomparison.domain.dto.TransactionDto;
 import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
-import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.domain.score.dto.MatchConfidence;
 import luka.mugosa.filecomparison.domain.score.dto.MatchScore;
 import luka.mugosa.filecomparison.domain.score.dto.ScoringWeights;
@@ -14,7 +13,15 @@ import org.junit.jupiter.api.Test;
 import java.time.ZonedDateTime;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createPerfectMatchTransaction;
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransaction;
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransactionWithNarrative;
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransactionWithType;
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransactionWithWallet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ScoreServiceImplTest {
 
@@ -503,85 +510,5 @@ class ScoreServiceImplTest {
             final double manualSum = components.values().stream().mapToDouble(v -> v).sum();
             assertEquals(score.getTotalScore(), manualSum, 0.001);
         }
-    }
-
-    // Helper methods to create test transactions
-    private TransactionDto createTransaction(String id, Double amount, ZonedDateTime date, String profileName) {
-        return new TransactionDto(
-                profileName,
-                date,
-                amount,
-                null,
-                null,
-                id != null ? new TransactionId(id) : null,
-                null,
-                null
-        );
-    }
-    // Helper methods to create test transactions
-    private TransactionDto createTransaction(String id, Double amount, ZonedDateTime date) {
-        return new TransactionDto(
-                "ProfileName",
-                date,
-                amount,
-                null,
-                null,
-                id != null ? new TransactionId(id) : null,
-                null,
-                null
-        );
-    }
-
-    private TransactionDto createTransactionWithNarrative(String id, String narrative) {
-        return new TransactionDto(
-                "ProfileName",
-                ZonedDateTime.now(),
-                100.0,
-                narrative,
-                null,
-                new TransactionId(id),
-                null,
-                null
-        );
-    }
-
-    private TransactionDto createTransactionWithWallet(String id, String wallet) {
-        return new TransactionDto(
-                "ProfileName",
-                ZonedDateTime.now(),
-                100.0,
-                null,
-                null,
-                new TransactionId(id),
-                null,
-                wallet
-        );
-    }
-
-    private TransactionDto createTransactionWithType(String id, TransactionType type) {
-        return new TransactionDto(
-                "ProfileName",
-                ZonedDateTime.now(),
-                100.0,
-                null,
-                null,
-                id != null ? new TransactionId(id) : null,
-                type,
-                null
-        );
-    }
-
-    private TransactionDto createPerfectMatchTransaction() {
-        final ZonedDateTime date = ZonedDateTime.now();
-        return new TransactionDto(
-                "ProfileName",
-                date,
-                100.0,
-                "PAYMENT TO STORE",
-                "Description",
-                new TransactionId("TXN001"),
-                TransactionType.TYPE_1,
-                "WALLET123"
-        );
     }
 }
