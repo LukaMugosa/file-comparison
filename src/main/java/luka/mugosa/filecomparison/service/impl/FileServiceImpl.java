@@ -13,6 +13,7 @@ import luka.mugosa.filecomparison.domain.exception.MissingHeaderException;
 import luka.mugosa.filecomparison.domain.exception.TransactionDataParsingException;
 import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.service.FileService;
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -306,6 +307,13 @@ public class FileServiceImpl implements FileService {
         if (fileSize == 0) {
             logger.warn("Uploaded file '{}' is empty", filename);
             throw new EmptyFileException("Uploaded file is empty");
+        }
+
+        final long maxFileSizeBytes = 10 * 1024 * 1024; // 10MB in bytes
+        if (fileSize > maxFileSizeBytes) {
+            logger.warn("Uploaded file '{}' exceeds size limit - Size: {} bytes, Limit: {} bytes",
+                    filename, fileSize, maxFileSizeBytes);
+            throw new IllegalArgumentException("File size should be less than 10MB");
         }
 
         final long startTime = System.currentTimeMillis();

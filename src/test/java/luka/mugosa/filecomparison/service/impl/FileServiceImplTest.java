@@ -327,6 +327,56 @@ class FileServiceImplTest {
         assertThat(nullTypeCount).isEqualTo(1);
     }
 
+    @Test
+    void parseFile_WithFileSizeOver10MB_ShouldThrowIllegalArgumentException() {
+        final long fileSize = 11 * 1024 * 1024; // 11MB
+        final MultipartFile largeFile = new MockMultipartFile(
+                "file",
+                "large-file.csv",
+                "text/csv",
+                new byte[(int) fileSize]
+        );
+
+        assertThatThrownBy(() -> fileService.parseFile(largeFile))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("File size should be less than 10MB");
+    }
+
+    @Test
+    void parseFile_WithFileSizeExactly10MB_ShouldParseSuccessfully() {
+        final long fileSize = 10 * 1024 * 1024; // Exactly 10MB
+        final String csvContent = createValidCsvContent();
+        final MultipartFile file = new MockMultipartFile(
+                "file",
+                "file.csv",
+                "text/csv",
+                csvContent.getBytes()
+        );
+
+        final Set<TransactionDto> result = fileService.parseFile(file);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(3);
+    }
+
+    @Test
+    void parseFile_WithFileSizeJustUnder10MB_ShouldParseSuccessfully() {
+        final String csvContent = createValidCsvContent();
+        final MultipartFile file = new MockMultipartFile(
+                "file",
+                "file.csv",
+                "text/csv",
+                csvContent.getBytes()
+        );
+
+        final Set<TransactionDto> result = fileService.parseFile(file);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(3);
+    }
+
     private String createValidCsvContent() {
         return createCsvHeader() + "\n" +
                 "Card Campaign,2014-01-11 22:27:44,-20000,*MOLEPS ATM25             MOLEPOLOLE    BW,DEDUCT,0584011808649511,1,P_NzI2ODY2ODlfMTM4MjcwMTU2NS45MzA5\n" +
