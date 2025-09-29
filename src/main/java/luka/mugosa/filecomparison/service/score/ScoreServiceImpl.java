@@ -6,6 +6,7 @@ import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.domain.score.dto.MatchConfidence;
 import luka.mugosa.filecomparison.domain.score.dto.MatchScore;
 import luka.mugosa.filecomparison.domain.score.dto.ScoringWeights;
+import luka.mugosa.filecomparison.service.ScoreService;
 import org.apache.commons.text.similarity.JaroWinklerSimilarity;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_PROFILE_NAME;
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_TRANSACTION_AMOUNT;
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_TRANSACTION_DATE;
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_TRANSACTION_DESCRIPTION;
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_TRANSACTION_ID;
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_TRANSACTION_NARRATIVE;
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_TRANSACTION_TYPE;
+import static luka.mugosa.filecomparison.constant.TransactionConstants.HEADER_WALLET_REFERENCE;
+
 @Service
-public class TransactionMatchingScorer {
+public class ScoreServiceImpl implements ScoreService {
 
     // Tolerance thresholds
     private static final double AMOUNT_TOLERANCE_PERCENTAGE = 0.01;    // 1%
@@ -34,54 +44,52 @@ public class TransactionMatchingScorer {
 
         final double idScore = scoreTransactionId(transaction1.getTransactionID(), transaction2.getTransactionID());
         if (idScore > 0) {
-            componentScores.put("TransactionID", idScore);
+            componentScores.put(HEADER_TRANSACTION_ID, idScore);
         }
 
         final double amountResult = scoreAmount(transaction1.getTransactionAmount(), transaction2.getTransactionAmount());
         if (amountResult > 0) {
-            componentScores.put("Amount", amountResult);
+            componentScores.put(HEADER_TRANSACTION_AMOUNT, amountResult);
         }
 
         final double dateResult = scoreDate(transaction1.getTransactionDate(), transaction2.getTransactionDate());
         if (dateResult > 0) {
-            componentScores.put("Date", dateResult);
+            componentScores.put(HEADER_TRANSACTION_DATE, dateResult);
         }
 
         final double walletScore = scoreWalletReference(transaction1.getWalletReference(), transaction2.getWalletReference());
         if (walletScore > 0) {
-            componentScores.put("WalletReference", walletScore);
+            componentScores.put(HEADER_WALLET_REFERENCE, walletScore);
         }
 
         final double narrativeResult = scoreStringSimilarity(
                 transaction1.getTransactionNarrative(),
                 transaction2.getTransactionNarrative(),
-                ScoringWeights.NARRATIVE_SIMILARITY_WEIGHT,
-                "Narrative"
+                ScoringWeights.NARRATIVE_SIMILARITY_WEIGHT
         );
 
         if (narrativeResult > 0) {
-            componentScores.put("Narrative", narrativeResult);
+            componentScores.put(HEADER_TRANSACTION_NARRATIVE, narrativeResult);
         }
 
         final double descriptionResult = scoreStringSimilarity(
                 transaction1.getTransactionDescription(),
                 transaction2.getTransactionDescription(),
-                ScoringWeights.DESCRIPTION_SIMILARITY_WEIGHT,
-                "Description"
+                ScoringWeights.DESCRIPTION_SIMILARITY_WEIGHT
         );
 
         if (descriptionResult > 0) {
-            componentScores.put("Description", descriptionResult);
+            componentScores.put(HEADER_TRANSACTION_DESCRIPTION, descriptionResult);
         }
 
         final double typeScore = scoreTransactionType(transaction1.getTransactionType(), transaction2.getTransactionType());
         if (typeScore > 0) {
-            componentScores.put("TransactionType", typeScore);
+            componentScores.put(HEADER_TRANSACTION_TYPE, typeScore);
         }
 
         final double profileScore = scoreProfileName(transaction1.getProfileName(), transaction2.getProfileName());
         if (profileScore > 0) {
-            componentScores.put("ProfileName", profileScore);
+            componentScores.put(HEADER_PROFILE_NAME, profileScore);
         }
 
         final double totalScore = componentScores.values().stream().mapToDouble(v -> v).sum();
@@ -160,7 +168,7 @@ public class TransactionMatchingScorer {
         return 0;
     }
 
-    private double scoreStringSimilarity(String str1, String str2, double maxWeight, String fieldName) {
+    private double scoreStringSimilarity(String str1, String str2, double maxWeight) {
         if (str1 == null || str2 == null || str1.trim().isEmpty() || str2.trim().isEmpty()) {
             return 0;
         }
@@ -222,12 +230,12 @@ public class TransactionMatchingScorer {
         }
 
         // Transaction ID match is high confidence if it contributes significantly
-        if (componentScores.containsKey("TransactionID") && totalScore >= 60.0) {
+        if (componentScores.containsKey(HEADER_TRANSACTION_ID) && totalScore >= 60.0) {
             return MatchConfidence.HIGH;
         }
 
         // Medium confidence: 50-79 points with critical fields
-        if (totalScore >= 50.0 && componentScores.containsKey("Amount") && componentScores.containsKey("Date")) {
+        if (totalScore >= 50.0 && componentScores.containsKey(HEADER_TRANSACTION_AMOUNT) && componentScores.containsKey(HEADER_TRANSACTION_DATE)) {
             return MatchConfidence.MEDIUM;
         }
 

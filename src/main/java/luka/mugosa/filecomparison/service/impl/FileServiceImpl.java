@@ -1,7 +1,6 @@
 package luka.mugosa.filecomparison.service.impl;
 
 import luka.mugosa.filecomparison.constant.TransactionConstants;
-import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.domain.dto.TransactionDto;
 import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
 import luka.mugosa.filecomparison.domain.exception.CsvColumnMismatchException;
@@ -12,6 +11,7 @@ import luka.mugosa.filecomparison.domain.exception.InvalidHeaderException;
 import luka.mugosa.filecomparison.domain.exception.LineParsingException;
 import luka.mugosa.filecomparison.domain.exception.MissingHeaderException;
 import luka.mugosa.filecomparison.domain.exception.TransactionDataParsingException;
+import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.service.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -40,12 +40,12 @@ public class FileServiceImpl implements FileService {
     private static final char CSV_SEPARATOR = ',';
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
-    public Set<TransactionDto> parseFile(final String path) {
+    public LinkedHashSet<TransactionDto> parseFile(final String path) {
         logger.info("Starting file parsing for path: {}", path);
         final long startTime = System.currentTimeMillis();
 
         try {
-            final Set<TransactionDto> result = parseTransactionsCsv(path);
+            final LinkedHashSet<TransactionDto> result = parseTransactionsCsv(path);
             final long duration = System.currentTimeMillis() - startTime;
             logger.info("Successfully parsed file: {} with {} transactions in {}ms",
                     path, result.size(), duration);
@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    public Set<TransactionDto> parseTransactionsCsv(final String filePath) {
+    public LinkedHashSet<TransactionDto> parseTransactionsCsv(final String filePath) {
         logger.debug("Opening file for parsing: {}", filePath);
 
         try (final BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -69,9 +69,9 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private Set<TransactionDto> readTransactionRows(final BufferedReader reader) throws IOException {
+    private LinkedHashSet<TransactionDto> readTransactionRows(final BufferedReader reader) throws IOException {
         logger.debug("Starting to read transaction rows from CSV");
-        final Set<TransactionDto> transactions = new HashSet<>();
+        final LinkedHashSet<TransactionDto> transactions = new LinkedHashSet<>();
 
         final String headerLine = reader.readLine();
         if (headerLine == null) {
@@ -91,7 +91,6 @@ public class FileServiceImpl implements FileService {
         int lineNumber = 1;
         int processedLines = 0;
         int skippedLines = 0;
-        int errorLines = 0;
 
         while ((line = reader.readLine()) != null) {
             lineNumber++;
@@ -115,20 +114,18 @@ public class FileServiceImpl implements FileService {
                         lineNumber, transaction.getTransactionID());
 
             } catch (FileParsingException e) {
-                errorLines++;
                 logger.error("Parsing error at line {}: {} - Line content: '{}'",
                         lineNumber, e.getMessage(), line);
                 throw new LineParsingException(lineNumber, e.getMessage(), line, e);
             } catch (Exception e) {
-                errorLines++;
                 logger.error("Unexpected error at line {}: {} - Line content: '{}'",
                         lineNumber, e.getMessage(), line, e);
                 throw new LineParsingException(lineNumber, "Unexpected parsing error", line, e);
             }
         }
 
-        logger.info("CSV parsing completed - Total lines processed: {}, Successful: {}, Skipped: {}, Errors: {}",
-                lineNumber - 1, processedLines, skippedLines, errorLines);
+        logger.info("CSV parsing completed - Total lines processed: {}, Successful: {}, Skipped: {}",
+                lineNumber - 1, processedLines, skippedLines);
         logger.info("Total unique transactions parsed: {}", transactions.size());
 
         return transactions;
@@ -299,7 +296,7 @@ public class FileServiceImpl implements FileService {
         return fields;
     }
 
-    public Set<TransactionDto> parseFile(final MultipartFile file) {
+    public LinkedHashSet<TransactionDto> parseFile(final MultipartFile file) {
         final String filename = file.getOriginalFilename();
         final long fileSize = file.getSize();
 
@@ -319,7 +316,7 @@ public class FileServiceImpl implements FileService {
 
             logger.debug("Created BufferedReader for multipart file with UTF-8 encoding");
 
-            final Set<TransactionDto> result = readTransactionRows(reader);
+            final LinkedHashSet<TransactionDto> result = readTransactionRows(reader);
             final long duration = System.currentTimeMillis() - startTime;
 
             logger.info("Successfully processed multipart file '{}' with {} transactions in {}ms",
