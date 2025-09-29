@@ -1,10 +1,9 @@
 package luka.mugosa.filecomparison.domain.dto;
 
-import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
+import luka.mugosa.filecomparison.domain.id.TransactionId;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
 public class TransactionDto {
 
@@ -65,19 +64,19 @@ public class TransactionDto {
         if (o == null || getClass() != o.getClass()) return false;
 
         TransactionDto that = (TransactionDto) o;
-        return Objects.equals(profileName, that.profileName) && Objects.equals(transactionDate, that.transactionDate) && Objects.equals(transactionAmount, that.transactionAmount) && Objects.equals(transactionNarrative, that.transactionNarrative) && Objects.equals(transactionDescription, that.transactionDescription) && Objects.equals(transactionID, that.transactionID) && transactionType == that.transactionType && Objects.equals(walletReference, that.walletReference);
+        return profileName.equals(that.profileName) && transactionDate.equals(that.transactionDate) && transactionAmount.equals(that.transactionAmount) && transactionNarrative.equals(that.transactionNarrative) && transactionDescription == that.transactionDescription && transactionID.equals(that.transactionID) && transactionType == that.transactionType && walletReference.equals(that.walletReference);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(profileName);
-        result = 31 * result + Objects.hashCode(transactionDate);
-        result = 31 * result + Objects.hashCode(transactionAmount);
-        result = 31 * result + Objects.hashCode(transactionNarrative);
-        result = 31 * result + Objects.hashCode(transactionDescription);
-        result = 31 * result + Objects.hashCode(transactionID);
-        result = 31 * result + Objects.hashCode(transactionType);
-        result = 31 * result + Objects.hashCode(walletReference);
+        int result = profileName.hashCode();
+        result = 31 * result + transactionDate.hashCode();
+        result = 31 * result + transactionAmount.hashCode();
+        result = 31 * result + transactionNarrative.hashCode();
+        result = 31 * result + transactionDescription.hashCode();
+        result = 31 * result + transactionID.hashCode();
+        result = 31 * result + transactionType.hashCode();
+        result = 31 * result + walletReference.hashCode();
         return result;
     }
 
@@ -88,8 +87,8 @@ public class TransactionDto {
                 ", transactionDate=" + transactionDate +
                 ", transactionAmount=" + transactionAmount +
                 ", transactionNarrative='" + transactionNarrative + '\'' +
-                ", transactionDescription='" + transactionDescription + '\'' +
-                ", transactionID='" + transactionID + '\'' +
+                ", transactionDescription=" + transactionDescription +
+                ", transactionID=" + transactionID +
                 ", transactionType=" + transactionType +
                 ", walletReference='" + walletReference + '\'' +
                 '}';

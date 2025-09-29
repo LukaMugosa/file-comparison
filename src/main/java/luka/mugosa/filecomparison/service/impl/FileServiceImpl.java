@@ -13,7 +13,6 @@ import luka.mugosa.filecomparison.domain.exception.MissingHeaderException;
 import luka.mugosa.filecomparison.domain.exception.TransactionDataParsingException;
 import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.service.FileService;
-import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,10 +28,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -41,12 +40,12 @@ public class FileServiceImpl implements FileService {
     private static final char CSV_SEPARATOR = ',';
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
-    public LinkedHashSet<TransactionDto> parseFile(final String path) {
+    public List<TransactionDto> parseFile(final String path) {
         logger.info("Starting file parsing for path: {}", path);
         final long startTime = System.currentTimeMillis();
 
         try {
-            final LinkedHashSet<TransactionDto> result = parseTransactionsCsv(path);
+            final List<TransactionDto> result = parseTransactionsCsv(path);
             final long duration = System.currentTimeMillis() - startTime;
             logger.info("Successfully parsed file: {} with {} transactions in {}ms",
                     path, result.size(), duration);
@@ -58,7 +57,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    public LinkedHashSet<TransactionDto> parseTransactionsCsv(final String filePath) {
+    public List<TransactionDto> parseTransactionsCsv(final String filePath) {
         logger.debug("Opening file for parsing: {}", filePath);
 
         try (final BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -70,9 +69,9 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private LinkedHashSet<TransactionDto> readTransactionRows(final BufferedReader reader) throws IOException {
+    private List<TransactionDto> readTransactionRows(final BufferedReader reader) throws IOException {
         logger.debug("Starting to read transaction rows from CSV");
-        final LinkedHashSet<TransactionDto> transactions = new LinkedHashSet<>();
+        final List<TransactionDto> transactions = new ArrayList<>();
 
         final String headerLine = reader.readLine();
         if (headerLine == null) {
@@ -285,19 +284,13 @@ public class FileServiceImpl implements FileService {
     }
 
     private String[] parseCsvLine(final String line) {
-        // Simple split since your CSV doesn't use quotes
-        final String[] fields = line.split(String.valueOf(CSV_SEPARATOR));
-        logger.trace("Split CSV line into {} fields", fields.length);
-
-        // Trim whitespace from each field
-        for (int i = 0; i < fields.length; i++) {
-            fields[i] = fields[i].trim();
+        if (line.endsWith(",")) {
+            return line.substring(0, line.length() - 1).split(String.valueOf(CSV_SEPARATOR));
         }
-
-        return fields;
+        return line.split(String.valueOf(CSV_SEPARATOR));
     }
 
-    public LinkedHashSet<TransactionDto> parseFile(final MultipartFile file) {
+    public List<TransactionDto> parseFile(final MultipartFile file) {
         final String filename = file.getOriginalFilename();
         final long fileSize = file.getSize();
 
@@ -324,7 +317,7 @@ public class FileServiceImpl implements FileService {
 
             logger.debug("Created BufferedReader for multipart file with UTF-8 encoding");
 
-            final LinkedHashSet<TransactionDto> result = readTransactionRows(reader);
+            final List<TransactionDto> result = readTransactionRows(reader);
             final long duration = System.currentTimeMillis() - startTime;
 
             logger.info("Successfully processed multipart file '{}' with {} transactions in {}ms",
@@ -346,12 +339,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public CompletableFuture<Set<TransactionDto>> parseFileAsync(String path) {
+    public CompletableFuture<List<TransactionDto>> parseFileAsync(String path) {
         return CompletableFuture.supplyAsync(() -> parseFile(path));
     }
 
     @Override
-    public CompletableFuture<Set<TransactionDto>> parseFileAsync(MultipartFile file) {
+    public CompletableFuture<List<TransactionDto>> parseFileAsync(MultipartFile file) {
         return CompletableFuture.supplyAsync(() -> parseFile(file));
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ class FileServiceImplTest {
         final String csvContent = createValidCsvContent();
         final Path testFile = createTempCsvFile(csvContent);
 
-        final Set<TransactionDto> result = fileService.parseFile(testFile.toString());
+        final List<TransactionDto> result = fileService.parseFile(testFile.toString());
 
         assertThat(result)
                 .isNotNull()
@@ -106,7 +107,7 @@ class FileServiceImplTest {
         final String csvContent = createCsvHeader();
         final Path testFile = createTempCsvFile(csvContent);
 
-        final Set<TransactionDto> result = fileService.parseFile(testFile.toString());
+        final List<TransactionDto> result = fileService.parseFile(testFile.toString());
 
         assertThat(result).isEmpty();
     }
@@ -131,7 +132,7 @@ class FileServiceImplTest {
                 csvContent.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(mockFile);
+        final List<TransactionDto> result = fileService.parseFile(mockFile);
 
         assertThat(result)
                 .isNotNull()
@@ -218,7 +219,7 @@ class FileServiceImplTest {
                 csvContentWithEmptyLines.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(fileWithEmptyLines);
+        final List<TransactionDto> result = fileService.parseFile(fileWithEmptyLines);
 
         assertThat(result).hasSize(2);
     }
@@ -236,7 +237,7 @@ class FileServiceImplTest {
                 csvContent.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(fileWithNullAmounts);
+        final List<TransactionDto> result = fileService.parseFile(fileWithNullAmounts);
 
         assertThat(result).hasSize(2);
 
@@ -263,7 +264,7 @@ class FileServiceImplTest {
                 csvContent.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(file);
+        final List<TransactionDto> result = fileService.parseFile(file);
 
         assertThat(result).hasSize(3);
 
@@ -294,7 +295,7 @@ class FileServiceImplTest {
                 csvContent.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(file);
+        final List<TransactionDto> result = fileService.parseFile(file);
 
         assertThat(result).hasSize(1);
         final long nullCount = result.stream()
@@ -316,7 +317,7 @@ class FileServiceImplTest {
                 csvContent.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(file);
+        final List<TransactionDto> result = fileService.parseFile(file);
 
         assertThat(result).hasSize(1);
 
@@ -353,7 +354,7 @@ class FileServiceImplTest {
                 csvContent.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(file);
+        final List<TransactionDto> result = fileService.parseFile(file);
 
         assertThat(result)
                 .isNotNull()
@@ -370,7 +371,7 @@ class FileServiceImplTest {
                 csvContent.getBytes()
         );
 
-        final Set<TransactionDto> result = fileService.parseFile(file);
+        final List<TransactionDto> result = fileService.parseFile(file);
 
         assertThat(result)
                 .isNotNull()

@@ -3,7 +3,6 @@ package luka.mugosa.filecomparison.service.impl;
 import luka.mugosa.filecomparison.domain.dto.TransactionDto;
 import luka.mugosa.filecomparison.domain.dto.response.ReconciliationResponse;
 import luka.mugosa.filecomparison.domain.exception.FileProcessingException;
-import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.service.FileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -14,17 +13,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createLargeTransactionSet;
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransactionSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -56,11 +55,11 @@ class TransactionServiceImplTest {
     @DisplayName("Should successfully reconcile transactions when both files parse correctly")
     void shouldSuccessfullyReconcileTransactionsWhenBothFilesParse() {
         // Arrange
-        final Set<TransactionDto> collection1 = createTransactionSet("TXN001", "TXN002");
-        final Set<TransactionDto> collection2 = createTransactionSet("TXN001", "TXN002");
+        final List<TransactionDto> collection1 = createTransactionSet("TXN001", "TXN002");
+        final List<TransactionDto> collection2 = createTransactionSet("TXN001", "TXN002");
 
-        final CompletableFuture<Set<TransactionDto>> future1 = CompletableFuture.completedFuture(collection1);
-        final CompletableFuture<Set<TransactionDto>> future2 = CompletableFuture.completedFuture(collection2);
+        final CompletableFuture<List<TransactionDto>> future1 = CompletableFuture.completedFuture(collection1);
+        final CompletableFuture<List<TransactionDto>> future2 = CompletableFuture.completedFuture(collection2);
 
         when(fileService.parseFileAsync(file1)).thenReturn(future1);
         when(fileService.parseFileAsync(file2)).thenReturn(future2);
@@ -98,7 +97,7 @@ class TransactionServiceImplTest {
     @Disabled("This test is slow, no need to run it in group")
     void shouldThrowFileProcessingExceptionWhenFileParsingTimesOut() {
         // Arrange
-        final CompletableFuture<Set<TransactionDto>> slowFuture = new CompletableFuture<>();
+        final CompletableFuture<List<TransactionDto>> slowFuture = new CompletableFuture<>();
         // Don't complete the future - simulates timeout
 
         when(fileService.parseFileAsync(file1)).thenReturn(slowFuture);
@@ -124,7 +123,7 @@ class TransactionServiceImplTest {
     void shouldThrowFileProcessingExceptionWhenFileParsingFails() {
         // Arrange
         final RuntimeException cause = new RuntimeException("File parsing error");
-        final CompletableFuture<Set<TransactionDto>> failedFuture = CompletableFuture.failedFuture(cause);
+        final CompletableFuture<List<TransactionDto>> failedFuture = CompletableFuture.failedFuture(cause);
 
         when(fileService.parseFileAsync(file1)).thenReturn(failedFuture);
         when(fileService.parseFileAsync(file2)).thenReturn(CompletableFuture.completedFuture(createTransactionSet()));
@@ -148,11 +147,11 @@ class TransactionServiceImplTest {
     @DisplayName("Should successfully reconcile empty transaction sets")
     void shouldSuccessfullyReconcileEmptyTransactionSets() {
         // Arrange
-        final Set<TransactionDto> emptyCollection1 = new HashSet<>();
-        final Set<TransactionDto> emptyCollection2 = new HashSet<>();
+        final List<TransactionDto> emptyCollection1 = new ArrayList<>();
+        final List<TransactionDto> emptyCollection2 = new ArrayList<>();
 
-        final CompletableFuture<Set<TransactionDto>> future1 = CompletableFuture.completedFuture(emptyCollection1);
-        final CompletableFuture<Set<TransactionDto>> future2 = CompletableFuture.completedFuture(emptyCollection2);
+        final CompletableFuture<List<TransactionDto>> future1 = CompletableFuture.completedFuture(emptyCollection1);
+        final CompletableFuture<List<TransactionDto>> future2 = CompletableFuture.completedFuture(emptyCollection2);
 
         when(fileService.parseFileAsync(file1)).thenReturn(future1);
         when(fileService.parseFileAsync(file2)).thenReturn(future2);
@@ -189,11 +188,11 @@ class TransactionServiceImplTest {
     @DisplayName("Should successfully handle one file with transactions and one empty")
     void shouldSuccessfullyHandleOneFileWithTransactionsAndOneEmpty() {
         // Arrange
-        final Set<TransactionDto> collection1 = createTransactionSet("TXN001", "TXN002");
-        final Set<TransactionDto> emptyCollection2 = new HashSet<>();
+        final List<TransactionDto> collection1 = createTransactionSet("TXN001", "TXN002");
+        final List<TransactionDto> emptyCollection2 = new ArrayList<>();
 
-        final CompletableFuture<Set<TransactionDto>> future1 = CompletableFuture.completedFuture(collection1);
-        final CompletableFuture<Set<TransactionDto>> future2 = CompletableFuture.completedFuture(emptyCollection2);
+        final CompletableFuture<List<TransactionDto>> future1 = CompletableFuture.completedFuture(collection1);
+        final CompletableFuture<List<TransactionDto>> future2 = CompletableFuture.completedFuture(emptyCollection2);
 
         when(fileService.parseFileAsync(file1)).thenReturn(future1);
         when(fileService.parseFileAsync(file2)).thenReturn(future2);
@@ -230,11 +229,11 @@ class TransactionServiceImplTest {
     @DisplayName("Should successfully handle large transaction sets")
     void shouldSuccessfullyHandleLargeTransactionSets() {
         // Arrange
-        final Set<TransactionDto> largeCollection1 = createLargeTransactionSet(1000);
-        final Set<TransactionDto> largeCollection2 = createLargeTransactionSet(1000);
+        final List<TransactionDto> largeCollection1 = createLargeTransactionSet(1000);
+        final List<TransactionDto> largeCollection2 = createLargeTransactionSet(1000);
 
-        final CompletableFuture<Set<TransactionDto>> future1 = CompletableFuture.completedFuture(largeCollection1);
-        final CompletableFuture<Set<TransactionDto>> future2 = CompletableFuture.completedFuture(largeCollection2);
+        final CompletableFuture<List<TransactionDto>> future1 = CompletableFuture.completedFuture(largeCollection1);
+        final CompletableFuture<List<TransactionDto>> future2 = CompletableFuture.completedFuture(largeCollection2);
 
         when(fileService.parseFileAsync(file1)).thenReturn(future1);
         when(fileService.parseFileAsync(file2)).thenReturn(future2);
@@ -270,8 +269,8 @@ class TransactionServiceImplTest {
     void shouldThrowFileProcessingExceptionWhenBothFilesFail() {
         // Arrange
         final RuntimeException cause = new RuntimeException("Both files failed");
-        final CompletableFuture<Set<TransactionDto>> failedFuture1 = CompletableFuture.failedFuture(cause);
-        final CompletableFuture<Set<TransactionDto>> failedFuture2 = CompletableFuture.failedFuture(cause);
+        final CompletableFuture<List<TransactionDto>> failedFuture1 = CompletableFuture.failedFuture(cause);
+        final CompletableFuture<List<TransactionDto>> failedFuture2 = CompletableFuture.failedFuture(cause);
 
         when(fileService.parseFileAsync(file1)).thenReturn(failedFuture1);
         when(fileService.parseFileAsync(file2)).thenReturn(failedFuture2);
@@ -288,35 +287,5 @@ class TransactionServiceImplTest {
         verify(fileService, times(1)).parseFileAsync(file1);
         verify(fileService, times(1)).parseFileAsync(file2);
         verifyNoInteractions(comparisonService);
-    }
-
-    // Helper methods
-    private Set<TransactionDto> createTransactionSet(String... ids) {
-        final Set<TransactionDto> set = new HashSet<>();
-        for (String id : ids) {
-            set.add(createTransaction(id));
-        }
-        return set;
-    }
-
-    private Set<TransactionDto> createLargeTransactionSet(int size) {
-        final Set<TransactionDto> set = new HashSet<>();
-        for (int i = 1; i <= size; i++) {
-            set.add(createTransaction("TXN" + String.format("%04d", i)));
-        }
-        return set;
-    }
-
-    private TransactionDto createTransaction(String id) {
-        return new TransactionDto(
-                "ProfileName",
-                ZonedDateTime.now(),
-                100.0,
-                "Narrative",
-                "Description",
-                new TransactionId(id),
-                null,
-                "WalletRef"
-        );
     }
 }

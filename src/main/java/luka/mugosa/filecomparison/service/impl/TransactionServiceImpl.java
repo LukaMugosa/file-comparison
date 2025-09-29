@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -29,14 +30,14 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public ReconciliationResponse reconcileTransaction(MultipartFile file1, MultipartFile file2) {
-        final CompletableFuture<Set<TransactionDto>> collectionFuture1 = fileService.parseFileAsync(file1);
-        final CompletableFuture<Set<TransactionDto>> collectionFuture2 = fileService.parseFileAsync(file2);
+        final CompletableFuture<List<TransactionDto>> collectionFuture1 = fileService.parseFileAsync(file1);
+        final CompletableFuture<List<TransactionDto>> collectionFuture2 = fileService.parseFileAsync(file2);
         try {
             final CompletableFuture<Void> allOf = CompletableFuture.allOf(collectionFuture1, collectionFuture2);
             allOf.get(2, TimeUnit.MINUTES); // 2-minute timeout
 
-            final Set<TransactionDto> collection1 = collectionFuture1.join();
-            final Set<TransactionDto> collection2 = collectionFuture2.join();
+            final List<TransactionDto> collection1 = collectionFuture1.join();
+            final List<TransactionDto> collection2 = collectionFuture2.join();
 
             return comparisonService.compareData(collection1, collection2);
         } catch (TimeoutException e) {

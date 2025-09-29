@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,18 +31,19 @@ public class ComparisonServiceImpl implements ComparisonService {
         this.scoreService = scoreService;
     }
 
-    public ReconciliationResponse compareData(Collection<TransactionDto> collection1, Collection<TransactionDto> collection2) {
+    public ReconciliationResponse compareData(List<TransactionDto> collection1, List<TransactionDto> collection2) {
         logger.info("Starting data comparison - Collection1: {} records, Collection2: {} records",
                 collection1.size(), collection2.size());
 
-        // Create maps for efficient lookups
-        final Map<TransactionId, TransactionDto> transactionMapById1 = collection1.stream()
-                .collect(Collectors.toMap(TransactionDto::getTransactionID, Function.identity()));
-        final Map<TransactionId, TransactionDto> transactionMapById2 = collection2.stream()
-                .collect(Collectors.toMap(TransactionDto::getTransactionID, Function.identity()));
+        // Group by TransactionID
+        final Map<TransactionId, List<TransactionDto>> groupedTransactions1 = collection1.stream()
+                .collect(Collectors.groupingBy(TransactionDto::getTransactionID));
 
-        final int totalRecordsInFile1 = transactionMapById1.size();
-        final int totalRecordsInFile2 = transactionMapById2.size();
+        final Map<TransactionId, List<TransactionDto>> groupedTransaction2 = collection2.stream()
+                .collect(Collectors.groupingBy(TransactionDto::getTransactionID));
+
+        final int totalRecordsInFile1 = (int) groupedTransactions1.values().stream().mapToLong(Collection::size).sum();
+        final int totalRecordsInFile2 = (int) groupedTransaction2.values().stream().mapToLong(Collection::size).sum();
 
         // Collections to track results
         int matchedRecords = 0;
@@ -52,38 +52,50 @@ public class ComparisonServiceImpl implements ComparisonService {
         final List<UnmatchedTransactionPairDto> unmatchedTransactionPairs = new ArrayList<>();
 
         // Process transactions from file 1
-        for (Map.Entry<TransactionId, TransactionDto> entry : transactionMapById1.entrySet()) {
+        for (Map.Entry<TransactionId, List<TransactionDto>> entry : groupedTransactions1.entrySet()) {
             final TransactionId transactionId = entry.getKey();
-            final TransactionDto dto1 = entry.getValue();
+            final List<TransactionDto> transactionDtos1 = entry.getValue();
 
-            if (transactionMapById2.containsKey(transactionId)) {
-                final TransactionDto dto2 = transactionMapById2.get(transactionId);
+            if (groupedTransaction2.containsKey(transactionId)) {
+                final List<TransactionDto> transactionDtos2 = groupedTransaction2.get(transactionId);
                 processedFromFile2.add(transactionId);
 
-                final MatchScore matchScore = scoreService.calculateScore(dto1, dto2);
-
-                // we can tune this by requirement, my opinion is that it should be like this
-                if (matchScore.getConfidence() == MatchConfidence.HIGH) {
-                    matchedRecords++;
-                    logger.debug("Exact match found: ID={}, Score={}", transactionId, matchScore.getTotalScore());
+                if (transactionDtos1.size() != transactionDtos2.size()) {
+                    unmatchedFromFile1.addAll(transactionDtos1);
+                    transactionDtos1.forEach(dto1 -> unmatchedTransactionPairs.add(new UnmatchedTransactionPairDto(dto1, null)));
                 } else {
-                    // Low confidence match - treat as an unmatched pair
-                    unmatchedFromFile1.add(dto1);
-                    unmatchedTransactionPairs.add(new UnmatchedTransactionPairDto(dto1, dto2));
-                    logger.debug("Match rejected (low confidence): ID={}, Score={}, Confidence={}",
-                            transactionId, matchScore.getTotalScore(), matchScore.getConfidence());
+                    for (int i = 0; i < transactionDtos1.size(); i++) {
+                        final TransactionDto dto1 = transactionDtos1.get(i);
+                        final TransactionDto dto2 = transactionDtos2.get(i);
+
+                        final MatchScore matchScore = scoreService.calculateScore(dto1, dto2);
+
+                        // we can tune this by requirement, my opinion is that it should be like this
+                        if (matchScore.getConfidence() == MatchConfidence.HIGH) {
+                            matchedRecords++;
+                            logger.debug("Exact match found: ID={}, Score={}", transactionId, matchScore.getTotalScore());
+                        } else {
+                            // Low confidence match - treat as an unmatched pair
+                            unmatchedFromFile1.add(dto1);
+                            unmatchedTransactionPairs.add(new UnmatchedTransactionPairDto(dto1, dto2));
+                            logger.debug("Match rejected (low confidence): ID={}, Score={}, Confidence={}",
+                                    transactionId, matchScore.getTotalScore(), matchScore.getConfidence());
+                        }
+                    }
                 }
             } else {
                 // No matching ID found in file 2
-                unmatchedFromFile1.add(dto1);
-                unmatchedTransactionPairs.add(new UnmatchedTransactionPairDto(dto1, null));
+                transactionDtos1.forEach(dto1 -> {
+                    unmatchedFromFile1.add(dto1);
+                    unmatchedTransactionPairs.add(new UnmatchedTransactionPairDto(dto1, null));
+                });
             }
         }
 
         // Find unmatched transactions from file 2 (those not processed above)
-        final List<TransactionDto> unmatchedFromFile2 = transactionMapById2.entrySet().stream()
+        final List<TransactionDto> unmatchedFromFile2 = groupedTransaction2.entrySet().stream()
                 .filter(entry -> !processedFromFile2.contains(entry.getKey()))
-                .map(Map.Entry::getValue)
+                .flatMap(entry -> entry.getValue().stream())
                 .toList();
 
         // Add file2-only unmatched transactions

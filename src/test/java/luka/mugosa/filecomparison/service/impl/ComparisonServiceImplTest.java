@@ -6,7 +6,6 @@ import luka.mugosa.filecomparison.domain.dto.response.ReconciliationResponse;
 import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
 import luka.mugosa.filecomparison.domain.id.TransactionId;
 import luka.mugosa.filecomparison.domain.score.dto.MatchConfidence;
-import luka.mugosa.filecomparison.domain.score.dto.MatchScore;
 import luka.mugosa.filecomparison.service.ScoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,11 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static luka.mugosa.filecomparison.service.util.TransactionUtil.createMatchScore;
+import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransaction;
 import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransactionList;
 import static luka.mugosa.filecomparison.service.util.TransactionUtil.createTransactionTwoMainParams;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -582,6 +581,188 @@ class ComparisonServiceImplTest {
 
             verify(scoreService, times(1000)).calculateScore(any(), any());
         }
+    }
+
+    @Test
+    @DisplayName("Should handle duplicate transactions - same row added twice in both files")
+    void shouldHandleDuplicateTransactionsSameRowAddedTwice() {
+        // Arrange
+        final TransactionDto txn1 = createTransaction("TXN001", 100.0, ZonedDateTime.now());
+        final TransactionDto txn1Duplicate = createTransaction("TXN001", 100.0, ZonedDateTime.now()); // Exact duplicate
+        final TransactionDto txn2 = createTransaction("TXN001", 100.0, ZonedDateTime.now()); // Match from file2
+        final TransactionDto txn2Duplicate = createTransaction("TXN001", 100.0, ZonedDateTime.now()); // Match from file2
+
+        final List<TransactionDto> collection1 = createTransactionList(txn1, txn1Duplicate);
+        final List<TransactionDto> collection2 = createTransactionList(txn2, txn2Duplicate);
+
+        when(scoreService.calculateScore(any(), any()))
+                .thenReturn(createMatchScore(95.0, MatchConfidence.HIGH));
+
+        // Act
+        final ReconciliationResponse response = comparisonService.compareData(collection1, collection2);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(2, response.getTotalRecordsInFile1());
+        assertEquals(2, response.getTotalRecordsInFile2());
+        assertEquals(2, response.getMatchedRecords());
+        assertEquals(0, response.getUnmatchedRecordsInFile1());
+        assertEquals(0, response.getUnmatchedRecordsInFile2());
+        assertEquals(100.0, response.getMatchPercentage());
+        assertTrue(response.getUnmatchedTransactionPairs().isEmpty());
+
+        verify(scoreService, times(2)).calculateScore(any(), any());
+    }
+
+    @Test
+    @DisplayName("Should handle transactions with same ID but completely different data")
+    void shouldHandleTransactionsWithSameIdButDifferentData() {
+        // Arrange
+        final ZonedDateTime date = ZonedDateTime.now();
+
+        // File 1: Two transactions with same ID
+        final TransactionDto txn1Match = createTransaction("TXN001", 100.0, date);
+        final TransactionDto txn1Different = new TransactionDto(
+                "DifferentProfile",
+                date.plusDays(10),
+                500.0,
+                "Completely Different Narrative",
+                "Different Description",
+                new TransactionId("TXN001"),
+                TransactionType.TYPE_2,
+                "DifferentWallet"
+        );
+
+        // File 2: Two transactions with same ID
+        final TransactionDto txn2Match = createTransaction("TXN001", 100.0, date);
+        final TransactionDto txn2Different = new TransactionDto(
+                "AnotherProfile",
+                date.plusDays(5),
+                999.0,
+                "Totally Different Narrative",
+                "Another Description",
+                new TransactionId("TXN001"),
+                TransactionType.TYPE_1,
+                "AnotherWallet"
+        );
+
+        final List<TransactionDto> collection1 = createTransactionList(txn1Match, txn1Different);
+        final List<TransactionDto> collection2 = createTransactionList(txn2Match, txn2Different);
+
+        // First pair matches (HIGH confidence)
+        when(scoreService.calculateScore(txn1Match, txn2Match))
+                .thenReturn(createMatchScore(95.0, MatchConfidence.HIGH));
+
+        // Second pair doesn't match (LOW confidence - different data)
+        when(scoreService.calculateScore(txn1Different, txn2Different))
+                .thenReturn(createMatchScore(15.0, MatchConfidence.VERY_LOW));
+
+        // Act
+        final ReconciliationResponse response = comparisonService.compareData(collection1, collection2);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(2, response.getTotalRecordsInFile1());
+        assertEquals(2, response.getTotalRecordsInFile2());
+        assertEquals(1, response.getMatchedRecords());
+        assertEquals(1, response.getUnmatchedRecordsInFile1());
+        assertEquals(0, response.getUnmatchedRecordsInFile2());
+        assertEquals(50.0, response.getMatchPercentage());
+
+        // Verify unmatched pairs
+        assertEquals(1, response.getUnmatchedTransactionPairs().size());
+        final UnmatchedTransactionPairDto unmatchedPair = response.getUnmatchedTransactionPairs().get(0);
+        assertNotNull(unmatchedPair.getTransaction1());
+        assertNotNull(unmatchedPair.getTransaction2());
+        assertEquals(new TransactionId("TXN001").toString(), unmatchedPair.getTransaction1().getTransactionID().toString());
+        assertEquals(new TransactionId("TXN001").toString(), unmatchedPair.getTransaction2().getTransactionID().toString());
+        assertEquals(500.0, unmatchedPair.getTransaction1().getTransactionAmount());
+        assertEquals(999.0, unmatchedPair.getTransaction2().getTransactionAmount());
+
+        verify(scoreService, times(2)).calculateScore(any(), any());
+    }
+
+    @Test
+    @DisplayName("Should handle unequal duplicate counts - 3 transactions in file1, 1 in file2")
+    void shouldHandleUnequalDuplicateCounts() {
+        // Arrange
+        final ZonedDateTime date = ZonedDateTime.now();
+
+        // File 1: Three transactions with same ID
+        final TransactionDto txn1_1 = createTransaction("TXN001", 100.0, date);
+        final TransactionDto txn1_2 = createTransaction("TXN001", 100.0, date);
+        final TransactionDto txn1_3 = createTransaction("TXN001", 100.0, date);
+
+        // File 2: Only one transaction with same ID
+        final TransactionDto txn2_1 = createTransaction("TXN001", 100.0, date);
+
+        final List<TransactionDto> collection1 = createTransactionList(txn1_1, txn1_2, txn1_3);
+        final List<TransactionDto> collection2 = createTransactionList(txn2_1);
+
+        // Act
+        final ReconciliationResponse response = comparisonService.compareData(collection1, collection2);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(3, response.getTotalRecordsInFile1());
+        assertEquals(1, response.getTotalRecordsInFile2());
+        assertEquals(0, response.getMatchedRecords()); // Size mismatch - all treated as unmatched
+        assertEquals(3, response.getUnmatchedRecordsInFile1());
+        assertEquals(0, response.getUnmatchedRecordsInFile2());
+        assertEquals(0.0, response.getMatchPercentage());
+
+        // Verify unmatched pairs - should have 3 from file1
+        assertEquals(3, response.getUnmatchedTransactionPairs().size());
+
+        // All should be file1-only (no file2 match)
+        response.getUnmatchedTransactionPairs().forEach(pair -> {
+            assertNotNull(pair.getTransaction1());
+            assertNull(pair.getTransaction2());
+            assertEquals(new TransactionId("TXN001").toString(), pair.getTransaction1().getTransactionID().toString());
+        });
+
+        // Should never call scoreService because a size mismatch is detected first
+        verify(scoreService, never()).calculateScore(any(), any());
+    }
+
+    @Test
+    @DisplayName("Should handle reverse unequal duplicate counts - 1 transaction in file1, 3 in file2")
+    void shouldHandleReverseUnequalDuplicateCounts() {
+        // Arrange
+        final ZonedDateTime date = ZonedDateTime.now();
+
+        // File 1: One transaction
+        final TransactionDto txn1_1 = createTransaction("TXN002", 200.0, date);
+
+        // File 2: Three transactions with same ID
+        final TransactionDto txn2_1 = createTransaction("TXN002", 200.0, date);
+        final TransactionDto txn2_2 = createTransaction("TXN002", 200.0, date);
+        final TransactionDto txn2_3 = createTransaction("TXN002", 200.0, date);
+
+        final List<TransactionDto> collection1 = createTransactionList(txn1_1);
+        final List<TransactionDto> collection2 = createTransactionList(txn2_1, txn2_2, txn2_3);
+
+        // Act
+        final ReconciliationResponse response = comparisonService.compareData(collection1, collection2);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(1, response.getTotalRecordsInFile1());
+        assertEquals(3, response.getTotalRecordsInFile2());
+        assertEquals(0, response.getMatchedRecords()); // Size mismatch - all treated as unmatched
+        assertEquals(1, response.getUnmatchedRecordsInFile1());
+        assertEquals(0, response.getUnmatchedRecordsInFile2()); // File2 extras aren't counted in unmatched from file2
+        assertEquals(0.0, response.getMatchPercentage());
+
+        // Verify unmatched pairs - should have 1 from file1
+        assertEquals(1, response.getUnmatchedTransactionPairs().size());
+
+        final UnmatchedTransactionPairDto pair = response.getUnmatchedTransactionPairs().get(0);
+        assertNotNull(pair.getTransaction1());
+        assertNull(pair.getTransaction2());
+        assertEquals(new TransactionId("TXN002").toString(), pair.getTransaction1().getTransactionID().toString());
+
+        verify(scoreService, never()).calculateScore(any(), any());
     }
 
 }
