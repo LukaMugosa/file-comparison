@@ -29,14 +29,4 @@ public final class TransactionConstants {
             HEADER_TRANSACTION_TYPE,
             HEADER_WALLET_REFERENCE
     };
-
-    // Date/Time Formatters for parsing transaction dates
-    public static final DateTimeFormatter[] DATE_TIME_FORMATTERS = {
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"),
-            DateTimeFormatter.ISO_ZONED_DATE_TIME,
-            DateTimeFormatter.ISO_OFFSET_DATE_TIME,
-            DateTimeFormatter.ISO_LOCAL_DATE_TIME,
-            DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss"),
-            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-    };
 }
