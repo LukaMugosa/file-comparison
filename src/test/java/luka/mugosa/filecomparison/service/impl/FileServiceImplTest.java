@@ -5,7 +5,6 @@ import luka.mugosa.filecomparison.domain.dto.TransactionDto;
 import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
 import luka.mugosa.filecomparison.domain.exception.EmptyFileException;
 import luka.mugosa.filecomparison.domain.exception.FileProcessingException;
-import luka.mugosa.filecomparison.domain.exception.LineParsingException;
 import luka.mugosa.filecomparison.domain.exception.MissingHeaderException;
 import luka.mugosa.filecomparison.domain.id.TransactionId;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -190,21 +188,6 @@ class FileServiceImplTest {
     }
 
     @Test
-    void parseFile_WithInvalidMultipartFileData_ShouldThrowLineParsingException() {
-        final String invalidCsvContent = createCsvHeader() + "\nInvalid,Data,Row,Missing,Fields";
-        final MultipartFile invalidFile = new MockMultipartFile(
-                "file",
-                "invalid.csv",
-                "text/csv",
-                invalidCsvContent.getBytes()
-        );
-
-        assertThatThrownBy(() -> fileService.parseFile(invalidFile))
-                .isInstanceOf(LineParsingException.class)
-                .hasMessageContaining("Error parsing line 2: Expected 8 columns but found 5. Line content: Invalid,Data,Row,Missing,Fields");
-    }
-
-    @Test
     void parseFile_WithMultipartFileContainingEmptyLines_ShouldSkipEmptyLines() {
         final String csvContentWithEmptyLines = createCsvHeader() + "\n" +
                 "Card Campaign,2014-01-11 22:27:44,-20000,*MOLEPS ATM25             MOLEPOLOLE    BW,DEDUCT,0584011808649511,1,P_NzI2ODY2ODlfMTM4MjcwMTU2NS45MzA5\n" +
@@ -242,9 +225,35 @@ class FileServiceImplTest {
         assertThat(result).hasSize(2);
 
         result.forEach(transaction -> {
-            if ("0584011808649511".equals(transaction.getTransactionID())) {
+            if (new TransactionId("0584011808649511").equals(transaction.getTransactionID())) {
                 assertThat(transaction.getTransactionAmount()).isNull();
-            } else if ("0584011815513406".equals(transaction.getTransactionID())) {
+            } else if (new TransactionId("0584011815513406").equals(transaction.getTransactionID())) {
+                assertThat(transaction.getTransactionAmount()).isNull();
+            }
+        });
+    }
+
+    @Test
+    void parseFile_doubleCommasAtTheEnd_missingWalletReference_ShouldHandleGracefully() {
+        final String csvContent = createCsvHeader() + "\n" +
+                "Card Campaign,2014-01-11 22:27:44,,*MOLEPS ATM25             MOLEPOLOLE    BW,DEDUCT,0584011808649511,1,,\n" +
+                "Card Campaign,2014-01-11 22:39:11,invalid_amount,*MOGODITSHANE2            MOGODITHSANE  BW,DEDUCT,0584011815513406,1,";
+
+        final MultipartFile fileWithNullAmounts = new MockMultipartFile(
+                "file",
+                "test.csv",
+                "text/csv",
+                csvContent.getBytes()
+        );
+
+        final List<TransactionDto> result = fileService.parseFile(fileWithNullAmounts);
+
+        assertThat(result).hasSize(2);
+
+        result.forEach(transaction -> {
+            if (new TransactionId("0584011808649511").equals(transaction.getTransactionID())) {
+                assertThat(transaction.getTransactionAmount()).isNull();
+            } else if (new TransactionId("0584011815513406").equals(transaction.getTransactionID())) {
                 assertThat(transaction.getTransactionAmount()).isNull();
             }
         });

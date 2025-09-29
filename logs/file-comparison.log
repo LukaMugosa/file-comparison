@@ -1,0 +1,120 @@
+2025-09-30 00:01:40.607 INFO  [SpringApplicationShutdownHook] o.s.boot.web.embedded.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-30 00:01:40.633 INFO  [tomcat-shutdown] o.s.boot.web.embedded.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-30 00:01:47.745 INFO  [main] l.mugosa.filecomparison.FileComparisonApplication - Starting FileComparisonApplication using Java 21.0.1 with PID 21670 (/Users/lukamugosa/Desktop/Paymentology/file-comparison/target/classes started by lukamugosa in /Users/lukamugosa/Desktop/Paymentology/file-comparison)
+2025-09-30 00:01:47.748 INFO  [main] l.mugosa.filecomparison.FileComparisonApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-30 00:01:48.676 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-30 00:01:48.688 INFO  [main] org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-30 00:01:48.688 INFO  [main] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-09-30 00:01:48.723 INFO  [main] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-30 00:01:48.723 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 913 ms
+2025-09-30 00:01:48.813 INFO  [main] o.s.b.a.web.servlet.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-09-30 00:01:49.093 INFO  [main] o.s.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-30 00:01:49.101 INFO  [main] l.mugosa.filecomparison.FileComparisonApplication - Started FileComparisonApplication in 1.911 seconds (process running for 3.165)
+2025-09-30 00:01:54.881 INFO  [http-nio-8080-exec-1] o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-30 00:01:54.882 INFO  [http-nio-8080-exec-1] org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-30 00:01:54.883 INFO  [http-nio-8080-exec-1] org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-09-30 00:01:55.141 ERROR [http-nio-8080-exec-4] l.m.f.r.exceptionHandling.GlobalExceptionHandler - Unexpected error: No static resource favicon.ico.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource favicon.ico.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1776)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:975)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:493)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-09-30 00:01:57.045 ERROR [http-nio-8080-exec-6] l.m.f.r.exceptionHandling.GlobalExceptionHandler - Unexpected error: No static resource .well-known/appspecific/com.chrome.devtools.json.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1776)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:975)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:493)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-09-30 00:02:10.802 INFO  [ForkJoinPool.commonPool-worker-1] l.m.filecomparison.service.impl.FileServiceImpl - Starting multipart file parsing - Filename: '37777aa6-fae8-48cb-aa8b-55220d03cab2.csv', Size: 44871 bytes
+2025-09-30 00:02:10.802 INFO  [ForkJoinPool.commonPool-worker-2] l.m.filecomparison.service.impl.FileServiceImpl - Starting multipart file parsing - Filename: 'b1bfec9a-34bf-490a-8edc-caac0660a4eb.csv', Size: 44929 bytes
+2025-09-30 00:02:10.803 INFO  [ForkJoinPool.commonPool-worker-2] l.m.filecomparison.service.impl.FileServiceImpl - Parsed 8 headers: [TransactionAmount, WalletReference, TransactionType, TransactionDescription, ProfileName, TransactionNarrative, TransactionDate, TransactionID]
+2025-09-30 00:02:10.803 INFO  [ForkJoinPool.commonPool-worker-1] l.m.filecomparison.service.impl.FileServiceImpl - Parsed 8 headers: [TransactionAmount, WalletReference, TransactionType, TransactionDescription, ProfileName, TransactionNarrative, TransactionDate, TransactionID]
+2025-09-30 00:02:10.816 INFO  [ForkJoinPool.commonPool-worker-2] l.m.filecomparison.service.impl.FileServiceImpl - CSV parsing completed - Total lines processed: 306, Successful: 306, Skipped: 0
+2025-09-30 00:02:10.816 INFO  [ForkJoinPool.commonPool-worker-1] l.m.filecomparison.service.impl.FileServiceImpl - CSV parsing completed - Total lines processed: 305, Successful: 305, Skipped: 0
+2025-09-30 00:02:10.817 INFO  [ForkJoinPool.commonPool-worker-2] l.m.filecomparison.service.impl.FileServiceImpl - Total unique transactions parsed: 306
+2025-09-30 00:02:10.817 INFO  [ForkJoinPool.commonPool-worker-1] l.m.filecomparison.service.impl.FileServiceImpl - Total unique transactions parsed: 305
+2025-09-30 00:02:10.817 INFO  [ForkJoinPool.commonPool-worker-2] l.m.filecomparison.service.impl.FileServiceImpl - Successfully processed multipart file 'b1bfec9a-34bf-490a-8edc-caac0660a4eb.csv' with 306 transactions in 14ms
+2025-09-30 00:02:10.817 INFO  [ForkJoinPool.commonPool-worker-1] l.m.filecomparison.service.impl.FileServiceImpl - Successfully processed multipart file '37777aa6-fae8-48cb-aa8b-55220d03cab2.csv' with 305 transactions in 14ms
+2025-09-30 00:02:10.817 INFO  [http-nio-8080-exec-7] l.m.f.service.impl.ComparisonServiceImpl - Starting data comparison - Collection1: 305 records, Collection2: 306 records
+2025-09-30 00:02:10.839 INFO  [http-nio-8080-exec-7] l.m.f.service.impl.ComparisonServiceImpl - === Reconciliation Summary ===
+2025-09-30 00:02:10.839 INFO  [http-nio-8080-exec-7] l.m.f.service.impl.ComparisonServiceImpl - File1 total records: 305
+2025-09-30 00:02:10.839 INFO  [http-nio-8080-exec-7] l.m.f.service.impl.ComparisonServiceImpl - File2 total records: 306
+2025-09-30 00:02:10.839 INFO  [http-nio-8080-exec-7] l.m.f.service.impl.ComparisonServiceImpl - Matched records: 295 (96.72131147540983%)
+2025-09-30 00:02:10.839 INFO  [http-nio-8080-exec-7] l.m.f.service.impl.ComparisonServiceImpl - Total unmatched pairs: 16
+2025-09-30 00:02:10.839 INFO  [http-nio-8080-exec-7] l.m.f.service.impl.ComparisonServiceImpl - ==============================

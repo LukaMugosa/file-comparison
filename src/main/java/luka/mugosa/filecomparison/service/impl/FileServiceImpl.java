@@ -134,15 +134,16 @@ public class FileServiceImpl implements FileService {
     private TransactionDto parseTransactionLine(final String line, final Map<String, Integer> headerMap) {
         logger.trace("Parsing transaction line: {}", line);
 
-        final String[] values = parseCsvLine(line);
+        final String[] values = parseCsvLine(line, headerMap.size(), false);
         logger.trace("Split line into {} values", values.length);
 
-        if (values.length != headerMap.size()) {
-            final String errorMsg = String.format("Expected %d columns but found %d",
-                    headerMap.size(), values.length);
-            logger.warn("Column count mismatch: {}", errorMsg);
-            throw new CsvColumnMismatchException(headerMap.size(), values.length);
-        }
+//        We handled this case in parseCsvLine, if there is missing data we put ""
+//        if (values.length != headerMap.size()) {
+//            final String errorMsg = String.format("Expected %d columns but found %d",
+//                    headerMap.size(), values.length);
+//            logger.warn("Column count mismatch: {}", errorMsg);
+//            throw new CsvColumnMismatchException(headerMap.size(), values.length);
+//        }
 
         try {
             final String profileName = getValueByHeader(TransactionConstants.HEADER_PROFILE_NAME, values, headerMap);
@@ -269,7 +270,7 @@ public class FileServiceImpl implements FileService {
     private Map<String, Integer> parseHeaders(final String headerLine) {
         logger.debug("Parsing header line");
         final Map<String, Integer> headerMap = new HashMap<>();
-        final String[] headers = parseCsvLine(headerLine);
+        final String[] headers = parseCsvLine(headerLine, 0, true);
 
         logger.debug("Found {} header columns", headers.length);
 
@@ -283,11 +284,20 @@ public class FileServiceImpl implements FileService {
         return headerMap;
     }
 
-    private String[] parseCsvLine(final String line) {
-        if (line.endsWith(",")) {
-            return line.substring(0, line.length() - 1).split(String.valueOf(CSV_SEPARATOR));
+    private String[] parseCsvLine(final String line, final int headerCount, boolean isForHeader) {
+        if (isForHeader) {
+            return line.split(String.valueOf(CSV_SEPARATOR));
         }
-        return line.split(String.valueOf(CSV_SEPARATOR));
+        final String[] split = line.split(String.valueOf(CSV_SEPARATOR));
+        final String[] result = new String[headerCount];
+        for (int i = 0; i < headerCount; i++) {
+            if (i < split.length) {
+                result[i] = split[i];
+            } else {
+                result[i] = "";
+            }
+        }
+        return result;
     }
 
     public List<TransactionDto> parseFile(final MultipartFile file) {
