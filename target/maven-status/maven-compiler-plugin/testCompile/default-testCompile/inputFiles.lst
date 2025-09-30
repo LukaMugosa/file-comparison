@@ -1,1 +1,6 @@
 /Users/lukamugosa/Desktop/Paymentology/file-comparison/src/test/java/luka/mugosa/filecomparison/FileComparisonApplicationTests.java
+/Users/lukamugosa/Desktop/Paymentology/file-comparison/src/test/java/luka/mugosa/filecomparison/service/impl/ComparisonServiceImplTest.java
+/Users/lukamugosa/Desktop/Paymentology/file-comparison/src/test/java/luka/mugosa/filecomparison/service/impl/FileServiceImplTest.java
+/Users/lukamugosa/Desktop/Paymentology/file-comparison/src/test/java/luka/mugosa/filecomparison/service/impl/TransactionServiceImplTest.java
+/Users/lukamugosa/Desktop/Paymentology/file-comparison/src/test/java/luka/mugosa/filecomparison/service/score/ScoreServiceImplTest.java
+/Users/lukamugosa/Desktop/Paymentology/file-comparison/src/test/java/luka/mugosa/filecomparison/service/util/TransactionUtil.java

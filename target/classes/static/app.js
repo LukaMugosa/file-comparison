@@ -4,6 +4,8 @@ const error = document.getElementById('error');
 const results = document.getElementById('results');
 const submitBtn = document.getElementById('submitBtn');
 
+const baseUrl = 'https://file-comparison-production.up.railway.app'
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -25,7 +27,7 @@ form.addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
 
     try {
-        const response = await axios.post('http://localhost:8080/api/v1/reconcile-transactions', formData, {
+        const response = await axios.post(`${baseUrl}/api/v1/reconcile-transactions`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
