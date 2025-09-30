@@ -4,7 +4,18 @@ const error = document.getElementById('error');
 const results = document.getElementById('results');
 const submitBtn = document.getElementById('submitBtn');
 
-const baseUrl = 'https://file-comparison-production.up.railway.app'
+// Configuration for different environments
+const config = {
+    production: 'https://file-comparison-production.up.railway.app',
+    local: 'http://localhost:8080'
+};
+
+// Detect environment (you can change this logic based on your needs)
+const environment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'local'
+    : 'production';
+
+const baseUrl = config[environment];
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
