@@ -24,7 +24,7 @@ public class TransactionResource {
             @RequestParam("file1") MultipartFile file1,
             @RequestParam("file2") MultipartFile file2) {
 
-        final ReconciliationResponse reconciliationResponse = transactionService.reconcileTransaction(file1, file2);
+        final ReconciliationResponse reconciliationResponse = transactionService.reconcileTransactions(file1, file2);
 
         return ResponseEntity.ok(reconciliationResponse);
     }

@@ -1,6 +1,11 @@
 package luka.mugosa.filecomparison.domain.score.dto;
 
 public class ScoringWeights {
+
+    private ScoringWeights() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static final double TRANSACTION_ID_WEIGHT = 40.0;
     public static final double AMOUNT_EXACT_WEIGHT = 25.0;
     public static final double DATE_EXACT_WEIGHT = 15.0;

@@ -76,16 +76,16 @@ class TransactionServiceImplTest {
         when(comparisonService.compareData(collection1, collection2)).thenReturn(expectedResponse);
 
         // Act
-        final ReconciliationResponse response = transactionService.reconcileTransaction(file1, file2);
+        final ReconciliationResponse response = transactionService.reconcileTransactions(file1, file2);
 
         // Assert
         assertNotNull(response);
-        assertEquals(2, response.getTotalRecordsInFile1());
-        assertEquals(2, response.getTotalRecordsInFile2());
-        assertEquals(2, response.getMatchedRecords());
-        assertEquals(0, response.getUnmatchedRecordsInFile1());
-        assertEquals(0, response.getUnmatchedRecordsInFile2());
-        assertEquals(100.0, response.getMatchPercentage());
+        assertEquals(2, response.totalRecordsInFile1());
+        assertEquals(2, response.totalRecordsInFile2());
+        assertEquals(2, response.matchedRecords());
+        assertEquals(0, response.unmatchedRecordsInFile1());
+        assertEquals(0, response.unmatchedRecordsInFile2());
+        assertEquals(100.0, response.matchPercentage());
 
         verify(fileService, times(1)).parseFileAsync(file1);
         verify(fileService, times(1)).parseFileAsync(file2);
@@ -106,7 +106,7 @@ class TransactionServiceImplTest {
         // Act & Assert
         final FileProcessingException exception = assertThrows(
                 FileProcessingException.class,
-                () -> transactionService.reconcileTransaction(file1, file2)
+                () -> transactionService.reconcileTransactions(file1, file2)
         );
 
         assertNotNull(exception);
@@ -131,7 +131,7 @@ class TransactionServiceImplTest {
         // Act & Assert
         final FileProcessingException exception = assertThrows(
                 FileProcessingException.class,
-                () -> transactionService.reconcileTransaction(file1, file2)
+                () -> transactionService.reconcileTransactions(file1, file2)
         );
 
         assertNotNull(exception);
@@ -168,16 +168,16 @@ class TransactionServiceImplTest {
         when(comparisonService.compareData(emptyCollection1, emptyCollection2)).thenReturn(expectedResponse);
 
         // Act
-        final ReconciliationResponse response = transactionService.reconcileTransaction(file1, file2);
+        final ReconciliationResponse response = transactionService.reconcileTransactions(file1, file2);
 
         // Assert
         assertNotNull(response);
-        assertEquals(0, response.getTotalRecordsInFile1());
-        assertEquals(0, response.getTotalRecordsInFile2());
-        assertEquals(0, response.getMatchedRecords());
-        assertEquals(0, response.getUnmatchedRecordsInFile1());
-        assertEquals(0, response.getUnmatchedRecordsInFile2());
-        assertEquals(0.0, response.getMatchPercentage());
+        assertEquals(0, response.totalRecordsInFile1());
+        assertEquals(0, response.totalRecordsInFile2());
+        assertEquals(0, response.matchedRecords());
+        assertEquals(0, response.unmatchedRecordsInFile1());
+        assertEquals(0, response.unmatchedRecordsInFile2());
+        assertEquals(0.0, response.matchPercentage());
 
         verify(fileService, times(1)).parseFileAsync(file1);
         verify(fileService, times(1)).parseFileAsync(file2);
@@ -209,16 +209,16 @@ class TransactionServiceImplTest {
         when(comparisonService.compareData(collection1, emptyCollection2)).thenReturn(expectedResponse);
 
         // Act
-        final ReconciliationResponse response = transactionService.reconcileTransaction(file1, file2);
+        final ReconciliationResponse response = transactionService.reconcileTransactions(file1, file2);
 
         // Assert
         assertNotNull(response);
-        assertEquals(2, response.getTotalRecordsInFile1());
-        assertEquals(0, response.getTotalRecordsInFile2());
-        assertEquals(0, response.getMatchedRecords());
-        assertEquals(2, response.getUnmatchedRecordsInFile1());
-        assertEquals(0, response.getUnmatchedRecordsInFile2());
-        assertEquals(0.0, response.getMatchPercentage());
+        assertEquals(2, response.totalRecordsInFile1());
+        assertEquals(0, response.totalRecordsInFile2());
+        assertEquals(0, response.matchedRecords());
+        assertEquals(2, response.unmatchedRecordsInFile1());
+        assertEquals(0, response.unmatchedRecordsInFile2());
+        assertEquals(0.0, response.matchPercentage());
 
         verify(fileService, times(1)).parseFileAsync(file1);
         verify(fileService, times(1)).parseFileAsync(file2);
@@ -250,14 +250,14 @@ class TransactionServiceImplTest {
         when(comparisonService.compareData(largeCollection1, largeCollection2)).thenReturn(expectedResponse);
 
         // Act
-        final ReconciliationResponse response = transactionService.reconcileTransaction(file1, file2);
+        final ReconciliationResponse response = transactionService.reconcileTransactions(file1, file2);
 
         // Assert
         assertNotNull(response);
-        assertEquals(1000, response.getTotalRecordsInFile1());
-        assertEquals(1000, response.getTotalRecordsInFile2());
-        assertEquals(1000, response.getMatchedRecords());
-        assertEquals(100.0, response.getMatchPercentage());
+        assertEquals(1000, response.totalRecordsInFile1());
+        assertEquals(1000, response.totalRecordsInFile2());
+        assertEquals(1000, response.matchedRecords());
+        assertEquals(100.0, response.matchPercentage());
 
         verify(fileService, times(1)).parseFileAsync(file1);
         verify(fileService, times(1)).parseFileAsync(file2);
@@ -278,7 +278,7 @@ class TransactionServiceImplTest {
         // Act & Assert
         final FileProcessingException exception = assertThrows(
                 FileProcessingException.class,
-                () -> transactionService.reconcileTransaction(file1, file2)
+                () -> transactionService.reconcileTransactions(file1, file2)
         );
 
         assertNotNull(exception);

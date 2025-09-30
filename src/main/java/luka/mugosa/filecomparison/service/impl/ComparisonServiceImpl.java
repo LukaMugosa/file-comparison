@@ -39,11 +39,11 @@ public class ComparisonServiceImpl implements ComparisonService {
         final Map<TransactionId, List<TransactionDto>> groupedTransactions1 = collection1.stream()
                 .collect(Collectors.groupingBy(TransactionDto::getTransactionID));
 
-        final Map<TransactionId, List<TransactionDto>> groupedTransaction2 = collection2.stream()
+        final Map<TransactionId, List<TransactionDto>> groupedTransactions2 = collection2.stream()
                 .collect(Collectors.groupingBy(TransactionDto::getTransactionID));
 
         final int totalRecordsInFile1 = (int) groupedTransactions1.values().stream().mapToLong(Collection::size).sum();
-        final int totalRecordsInFile2 = (int) groupedTransaction2.values().stream().mapToLong(Collection::size).sum();
+        final int totalRecordsInFile2 = (int) groupedTransactions2.values().stream().mapToLong(Collection::size).sum();
 
         // Collections to track results
         int matchedRecords = 0;
@@ -51,13 +51,13 @@ public class ComparisonServiceImpl implements ComparisonService {
         final Set<TransactionId> processedFromFile2 = new HashSet<>();
         final List<UnmatchedTransactionPairDto> unmatchedTransactionPairs = new ArrayList<>();
 
-        // Process transactions from file 1
+        // Process transactions from file 1 and compare with file 2
         for (Map.Entry<TransactionId, List<TransactionDto>> entry : groupedTransactions1.entrySet()) {
             final TransactionId transactionId = entry.getKey();
             final List<TransactionDto> transactionDtos1 = entry.getValue();
 
-            if (groupedTransaction2.containsKey(transactionId)) {
-                final List<TransactionDto> transactionDtos2 = groupedTransaction2.get(transactionId);
+            if (groupedTransactions2.containsKey(transactionId)) {
+                final List<TransactionDto> transactionDtos2 = groupedTransactions2.get(transactionId);
                 processedFromFile2.add(transactionId);
 
                 if (transactionDtos1.size() != transactionDtos2.size()) {
@@ -71,15 +71,15 @@ public class ComparisonServiceImpl implements ComparisonService {
                         final MatchScore matchScore = scoreService.calculateScore(dto1, dto2);
 
                         // we can tune this by requirement, my opinion is that it should be like this
-                        if (matchScore.getConfidence() == MatchConfidence.HIGH) {
+                        if (matchScore.confidence() == MatchConfidence.HIGH) {
                             matchedRecords++;
-                            logger.debug("Exact match found: ID={}, Score={}", transactionId, matchScore.getTotalScore());
+                            logger.debug("Exact match found: ID={}, Score={}", transactionId, matchScore.totalScore());
                         } else {
                             // Low confidence match - treat as an unmatched pair
                             unmatchedFromFile1.add(dto1);
                             unmatchedTransactionPairs.add(new UnmatchedTransactionPairDto(dto1, dto2));
                             logger.debug("Match rejected (low confidence): ID={}, Score={}, Confidence={}",
-                                    transactionId, matchScore.getTotalScore(), matchScore.getConfidence());
+                                    transactionId, matchScore.totalScore(), matchScore.confidence());
                         }
                     }
                 }
@@ -93,7 +93,7 @@ public class ComparisonServiceImpl implements ComparisonService {
         }
 
         // Find unmatched transactions from file 2 (those not processed above)
-        final List<TransactionDto> unmatchedFromFile2 = groupedTransaction2.entrySet().stream()
+        final List<TransactionDto> unmatchedFromFile2 = groupedTransactions2.entrySet().stream()
                 .filter(entry -> !processedFromFile2.contains(entry.getKey()))
                 .flatMap(entry -> entry.getValue().stream())
                 .toList();

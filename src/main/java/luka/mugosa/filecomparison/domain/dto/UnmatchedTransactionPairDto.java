@@ -5,6 +5,8 @@ import java.util.Objects;
 
 public final class UnmatchedTransactionPairDto implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     final TransactionDto transaction1;
     final TransactionDto transaction2;
 

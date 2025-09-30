@@ -6,6 +6,7 @@ import luka.mugosa.filecomparison.domain.exception.FileProcessingException;
 import luka.mugosa.filecomparison.service.FileService;
 import luka.mugosa.filecomparison.service.TransactionService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(TransactionServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
     private final ComparisonServiceImpl comparisonService;
     private final FileService fileService;
@@ -29,7 +30,7 @@ public class TransactionServiceImpl implements TransactionService {
         this.fileService = fileService;
     }
 
-    public ReconciliationResponse reconcileTransaction(MultipartFile file1, MultipartFile file2) {
+    public ReconciliationResponse reconcileTransactions(MultipartFile file1, MultipartFile file2) {
         final CompletableFuture<List<TransactionDto>> collectionFuture1 = fileService.parseFileAsync(file1);
         final CompletableFuture<List<TransactionDto>> collectionFuture2 = fileService.parseFileAsync(file2);
         try {

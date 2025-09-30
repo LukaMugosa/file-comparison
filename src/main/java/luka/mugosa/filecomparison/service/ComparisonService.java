@@ -3,7 +3,6 @@ package luka.mugosa.filecomparison.service;
 import luka.mugosa.filecomparison.domain.dto.TransactionDto;
 import luka.mugosa.filecomparison.domain.dto.response.ReconciliationResponse;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface ComparisonService {

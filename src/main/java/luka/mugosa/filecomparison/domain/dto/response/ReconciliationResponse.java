@@ -7,60 +7,13 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public final class ReconciliationResponse implements Serializable {
+public record ReconciliationResponse(int totalRecordsInFile1, int totalRecordsInFile2, int unmatchedRecordsInFile1,
+                                     int unmatchedRecordsInFile2, int matchedRecords,
+                                     List<UnmatchedTransactionPairDto> unmatchedTransactionPairs,
+                                     double matchPercentage) implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    private final int totalRecordsInFile1;
-    private final int totalRecordsInFile2;
-
-    private final int unmatchedRecordsInFile1;
-    private final int unmatchedRecordsInFile2;
-
-    private final int matchedRecords;
-
-    private final List<UnmatchedTransactionPairDto> unmatchedTransactionPairs;
-
-    private final double matchPercentage;
-
-    public ReconciliationResponse(int totalRecordsInFile1, int totalRecordsInFile2, int unmatchedRecordsInFile1, int unmatchedRecordsInFile2, int matchedRecords, List<UnmatchedTransactionPairDto> unmatchedTransactionPairs, double matchPercentage) {
-        this.totalRecordsInFile1 = totalRecordsInFile1;
-        this.totalRecordsInFile2 = totalRecordsInFile2;
-        this.unmatchedRecordsInFile1 = unmatchedRecordsInFile1;
-        this.unmatchedRecordsInFile2 = unmatchedRecordsInFile2;
-        this.matchedRecords = matchedRecords;
-        this.unmatchedTransactionPairs = unmatchedTransactionPairs;
-        this.matchPercentage = matchPercentage;
-    }
-
-    public int getTotalRecordsInFile1() {
-        return totalRecordsInFile1;
-    }
-
-    public int getTotalRecordsInFile2() {
-        return totalRecordsInFile2;
-    }
-
-    public int getUnmatchedRecordsInFile1() {
-        return unmatchedRecordsInFile1;
-    }
-
-    public int getUnmatchedRecordsInFile2() {
-        return unmatchedRecordsInFile2;
-    }
-
-    public int getMatchedRecords() {
-        return matchedRecords;
-    }
-
-    public double getMatchPercentage() {
-        return matchPercentage;
-    }
-
-    public List<UnmatchedTransactionPairDto> getUnmatchedTransactionPairs() {
-        return unmatchedTransactionPairs;
-    }
 
     @Override
     public boolean equals(Object o) {

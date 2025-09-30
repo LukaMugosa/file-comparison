@@ -3,7 +3,6 @@ package luka.mugosa.filecomparison.service.impl;
 import luka.mugosa.filecomparison.constant.TransactionConstants;
 import luka.mugosa.filecomparison.domain.dto.TransactionDto;
 import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
-import luka.mugosa.filecomparison.domain.exception.CsvColumnMismatchException;
 import luka.mugosa.filecomparison.domain.exception.EmptyFileException;
 import luka.mugosa.filecomparison.domain.exception.FileParsingException;
 import luka.mugosa.filecomparison.domain.exception.FileProcessingException;

@@ -230,7 +230,7 @@ public class ScoreServiceImpl implements ScoreService {
         }
 
         // Transaction ID match is high confidence if it contributes significantly
-        if (componentScores.containsKey(HEADER_TRANSACTION_ID) && totalScore >= 60.0) {
+        if (componentScores.containsKey(HEADER_TRANSACTION_ID) && totalScore >= 70.0) {
             return MatchConfidence.HIGH;
         }
 

@@ -1,11 +1,9 @@
 package luka.mugosa.filecomparison.constant;
 
-import java.time.format.DateTimeFormatter;
-
 public final class TransactionConstants {
 
     private TransactionConstants() {
-        // Prevent instantiation
+        throw new IllegalStateException("Utility class");
     }
 
     // CSV Header Constants

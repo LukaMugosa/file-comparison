@@ -3,9 +3,12 @@ package luka.mugosa.filecomparison.domain.dto;
 import luka.mugosa.filecomparison.domain.enumeration.TransactionType;
 import luka.mugosa.filecomparison.domain.id.TransactionId;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
-public class TransactionDto {
+public class TransactionDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final String profileName;
     private final ZonedDateTime transactionDate;

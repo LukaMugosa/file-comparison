@@ -46,10 +46,10 @@ class ScoreServiceImplTest {
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
             assertNotNull(score);
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
-            assertTrue(score.getComponentScores().containsKey("TransactionID"));
-            assertEquals(ScoringWeights.TRANSACTION_ID_WEIGHT, score.getComponentScores().get("TransactionID"));
-            assertEquals(81.0, score.getTotalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
+            assertTrue(score.componentScores().containsKey("TransactionID"));
+            assertEquals(ScoringWeights.TRANSACTION_ID_WEIGHT, score.componentScores().get("TransactionID"));
+            assertEquals(81.0, score.totalScore());
         }
 
         @Test
@@ -61,10 +61,10 @@ class ScoreServiceImplTest {
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
             assertNotNull(score);
-            final Map<String, Double> componentScores = score.getComponentScores();
+            final Map<String, Double> componentScores = score.componentScores();
             assertFalse(componentScores.containsKey("TransactionID"));
-            assertEquals(41.0, score.getTotalScore());
-            assertEquals(MatchConfidence.LOW, score.getConfidence());
+            assertEquals(41.0, score.totalScore());
+            assertEquals(MatchConfidence.LOW, score.confidence());
             assertEquals(25.0, componentScores.get("TransactionAmount"));
             assertEquals(1.0, componentScores.get("ProfileName"));
             assertEquals(15.0, componentScores.get("TransactionDate"));
@@ -79,11 +79,11 @@ class ScoreServiceImplTest {
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
             assertNotNull(score);
-            final Map<String, Double> componentScores = score.getComponentScores();
+            final Map<String, Double> componentScores = score.componentScores();
             assertFalse(componentScores.containsKey("TransactionID"));
-            assertEquals(41.0, score.getTotalScore());
+            assertEquals(41.0, score.totalScore());
 
-            assertEquals(MatchConfidence.LOW, score.getConfidence());
+            assertEquals(MatchConfidence.LOW, score.confidence());
 
             assertEquals(25.0, componentScores.get("TransactionAmount"));
             assertEquals(1.0, componentScores.get("ProfileName"));
@@ -105,11 +105,11 @@ class ScoreServiceImplTest {
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
             assertNotNull(score);
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
-            assertTrue(score.getComponentScores().containsKey("TransactionAmount"));
-            final double amountScore = score.getComponentScores().get("TransactionAmount");
+            assertEquals(MatchConfidence.HIGH, score.confidence());
+            assertTrue(score.componentScores().containsKey("TransactionAmount"));
+            final double amountScore = score.componentScores().get("TransactionAmount");
             assertTrue(amountScore > 0 && amountScore < ScoringWeights.AMOUNT_EXACT_WEIGHT);
-            assertTrue(score.getTotalScore() > 0);
+            assertTrue(score.totalScore() > 0);
         }
 
         @Test
@@ -122,9 +122,9 @@ class ScoreServiceImplTest {
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
             assertNotNull(score);
-            assertEquals(MatchConfidence.LOW, score.getConfidence()); // ID + Date still match
-            assertFalse(score.getComponentScores().containsKey("TransactionAmount"));
-            assertTrue(score.getTotalScore() > 0); // Still has ID and Date scores
+            assertEquals(MatchConfidence.LOW, score.confidence()); // ID + Date still match
+            assertFalse(score.componentScores().containsKey("TransactionAmount"));
+            assertTrue(score.totalScore() > 0); // Still has ID and Date scores
         }
 
         @Test
@@ -137,9 +137,9 @@ class ScoreServiceImplTest {
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
             assertNotNull(score);
-            assertEquals(MatchConfidence.LOW, score.getConfidence()); // ID + Date still match
-            assertFalse(score.getComponentScores().containsKey("TransactionAmount"));
-            assertTrue(score.getTotalScore() > 0); // Still has ID and Date scores
+            assertEquals(MatchConfidence.LOW, score.confidence()); // ID + Date still match
+            assertFalse(score.componentScores().containsKey("TransactionAmount"));
+            assertTrue(score.totalScore() > 0); // Still has ID and Date scores
         }
 
         @Test
@@ -152,10 +152,10 @@ class ScoreServiceImplTest {
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
             assertNotNull(score);
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
-            assertTrue(score.getComponentScores().containsKey("TransactionAmount"));
-            assertEquals(ScoringWeights.AMOUNT_EXACT_WEIGHT, score.getComponentScores().get("TransactionAmount"));
-            assertTrue(score.getTotalScore() >= 80.0);
+            assertEquals(MatchConfidence.HIGH, score.confidence());
+            assertTrue(score.componentScores().containsKey("TransactionAmount"));
+            assertEquals(ScoringWeights.AMOUNT_EXACT_WEIGHT, score.componentScores().get("TransactionAmount"));
+            assertTrue(score.totalScore() >= 80.0);
         }
     }
 
@@ -173,8 +173,8 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("TransactionDate"));
-            final double dateScore = score.getComponentScores().get("TransactionDate");
+            assertTrue(score.componentScores().containsKey("TransactionDate"));
+            final double dateScore = score.componentScores().get("TransactionDate");
             assertTrue(dateScore > 0 && dateScore < ScoringWeights.DATE_EXACT_WEIGHT);
         }
 
@@ -188,9 +188,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("TransactionDate"));
-            assertEquals(66.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("TransactionDate"));
+            assertEquals(66.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -201,9 +201,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("TransactionDate"));
-            assertEquals(66.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("TransactionDate"));
+            assertEquals(66.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -216,10 +216,10 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("TransactionDate"));
-            assertEquals(ScoringWeights.DATE_EXACT_WEIGHT, score.getComponentScores().get("TransactionDate"));
-            assertEquals(81.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertTrue(score.componentScores().containsKey("TransactionDate"));
+            assertEquals(ScoringWeights.DATE_EXACT_WEIGHT, score.componentScores().get("TransactionDate"));
+            assertEquals(81.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
     }
 
@@ -235,11 +235,11 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("TransactionNarrative"));
+            assertTrue(score.componentScores().containsKey("TransactionNarrative"));
             assertEquals(ScoringWeights.NARRATIVE_SIMILARITY_WEIGHT,
-                    score.getComponentScores().get("TransactionNarrative"));
-            assertEquals(86.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+                    score.componentScores().get("TransactionNarrative"));
+            assertEquals(86.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -250,11 +250,11 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("TransactionNarrative"));
+            assertTrue(score.componentScores().containsKey("TransactionNarrative"));
             assertEquals(ScoringWeights.NARRATIVE_SIMILARITY_WEIGHT,
-                    score.getComponentScores().get("TransactionNarrative"));
-            assertEquals(86.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+                    score.componentScores().get("TransactionNarrative"));
+            assertEquals(86.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -265,11 +265,11 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("TransactionNarrative"));
-            final double narrativeScore = score.getComponentScores().get("TransactionNarrative");
+            assertTrue(score.componentScores().containsKey("TransactionNarrative"));
+            final double narrativeScore = score.componentScores().get("TransactionNarrative");
             assertTrue(narrativeScore > 0 && narrativeScore < ScoringWeights.NARRATIVE_SIMILARITY_WEIGHT);
-            assertEquals(85.7, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertEquals(85.7, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -280,9 +280,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("TransactionNarrative"));
-            assertEquals(81.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("TransactionNarrative"));
+            assertEquals(81.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -293,9 +293,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("TransactionNarrative"));
-            assertEquals(81.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("TransactionNarrative"));
+            assertEquals(81.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -306,11 +306,11 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("TransactionNarrative"));
+            assertTrue(score.componentScores().containsKey("TransactionNarrative"));
             assertEquals(ScoringWeights.NARRATIVE_SIMILARITY_WEIGHT,
-                    score.getComponentScores().get("TransactionNarrative"));
-            assertEquals(86.0, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+                    score.componentScores().get("TransactionNarrative"));
+            assertEquals(86.0, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
     }
 
@@ -326,11 +326,11 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("WalletReference"));
+            assertTrue(score.componentScores().containsKey("WalletReference"));
             assertEquals(ScoringWeights.WALLET_REFERENCE_WEIGHT,
-                    score.getComponentScores().get("WalletReference"));
-            assertEquals(91, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+                    score.componentScores().get("WalletReference"));
+            assertEquals(91, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -341,11 +341,11 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("WalletReference"));
+            assertTrue(score.componentScores().containsKey("WalletReference"));
             assertEquals(ScoringWeights.WALLET_REFERENCE_WEIGHT,
-                    score.getComponentScores().get("WalletReference"));
-            assertEquals(91, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+                    score.componentScores().get("WalletReference"));
+            assertEquals(91, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -356,9 +356,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("WalletReference"));
-            assertEquals(81, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("WalletReference"));
+            assertEquals(81, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -369,9 +369,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("WalletReference"));
-            assertEquals(81, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("WalletReference"));
+            assertEquals(81, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
     }
 
@@ -387,11 +387,11 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getComponentScores().containsKey("TransactionType"));
+            assertTrue(score.componentScores().containsKey("TransactionType"));
             assertEquals(ScoringWeights.TRANSACTION_TYPE_WEIGHT,
-                    score.getComponentScores().get("TransactionType"));
-            assertEquals(83, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+                    score.componentScores().get("TransactionType"));
+            assertEquals(83, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -402,9 +402,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("TransactionType"));
-            assertEquals(81, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("TransactionType"));
+            assertEquals(81, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
 
         @Test
@@ -415,9 +415,9 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertFalse(score.getComponentScores().containsKey("TransactionType"));
-            assertEquals(81, score.getTotalScore());
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
+            assertFalse(score.componentScores().containsKey("TransactionType"));
+            assertEquals(81, score.totalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
         }
     }
 
@@ -433,8 +433,8 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertEquals(MatchConfidence.HIGH, score.getConfidence());
-            assertEquals(101.0, score.getTotalScore());
+            assertEquals(MatchConfidence.HIGH, score.confidence());
+            assertEquals(101.0, score.totalScore());
         }
 
         @Test
@@ -447,10 +447,10 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertEquals(41, score.getTotalScore());
-            assertEquals(MatchConfidence.LOW, score.getConfidence());
-            assertTrue(score.getComponentScores().containsKey("TransactionAmount"));
-            assertTrue(score.getComponentScores().containsKey("TransactionDate"));
+            assertEquals(41, score.totalScore());
+            assertEquals(MatchConfidence.LOW, score.confidence());
+            assertTrue(score.componentScores().containsKey("TransactionAmount"));
+            assertTrue(score.componentScores().containsKey("TransactionDate"));
         }
 
         @Test
@@ -461,8 +461,8 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertTrue(score.getTotalScore() < 20.0);
-            assertEquals(MatchConfidence.VERY_LOW, score.getConfidence());
+            assertTrue(score.totalScore() < 20.0);
+            assertEquals(MatchConfidence.VERY_LOW, score.confidence());
         }
     }
 
@@ -478,8 +478,8 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertEquals(MatchConfidence.VERY_LOW, score.getConfidence());
-            assertEquals(0.0, score.getTotalScore());
+            assertEquals(MatchConfidence.VERY_LOW, score.confidence());
+            assertEquals(0.0, score.totalScore());
         }
 
         @Test
@@ -490,8 +490,8 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            assertEquals(0.0, score.getTotalScore());
-            assertEquals(MatchConfidence.VERY_LOW, score.getConfidence());
+            assertEquals(0.0, score.totalScore());
+            assertEquals(MatchConfidence.VERY_LOW, score.confidence());
         }
 
         @Test
@@ -503,12 +503,12 @@ class ScoreServiceImplTest {
 
             final MatchScore score = scoreService.calculateScore(txn1, txn2);
 
-            final Map<String, Double> components = score.getComponentScores();
+            final Map<String, Double> components = score.componentScores();
             assertNotNull(components);
             assertTrue(components.size() > 0);
 
             final double manualSum = components.values().stream().mapToDouble(v -> v).sum();
-            assertEquals(score.getTotalScore(), manualSum, 0.001);
+            assertEquals(score.totalScore(), manualSum, 0.001);
         }
     }
 }

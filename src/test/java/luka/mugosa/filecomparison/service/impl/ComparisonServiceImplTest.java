@@ -75,16 +75,16 @@ class ComparisonServiceImplTest {
 
             // Assert - Response metadata
             assertNotNull(response);
-            assertEquals(3, response.getTotalRecordsInFile1());
-            assertEquals(3, response.getTotalRecordsInFile2());
-            assertEquals(3, response.getMatchedRecords());
-            assertEquals(0, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(100.0, response.getMatchPercentage());
+            assertEquals(3, response.totalRecordsInFile1());
+            assertEquals(3, response.totalRecordsInFile2());
+            assertEquals(3, response.matchedRecords());
+            assertEquals(0, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(100.0, response.matchPercentage());
 
             // Assert - Unmatched pairs
-            assertNotNull(response.getUnmatchedTransactionPairs());
-            assertTrue(response.getUnmatchedTransactionPairs().isEmpty());
+            assertNotNull(response.unmatchedTransactionPairs());
+            assertTrue(response.unmatchedTransactionPairs().isEmpty());
 
             // Verify interactions
             verify(scoreService, times(3)).calculateScore(any(), any());
@@ -108,13 +108,13 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(1, response.getTotalRecordsInFile1());
-            assertEquals(1, response.getTotalRecordsInFile2());
-            assertEquals(1, response.getMatchedRecords());
-            assertEquals(0, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(100.0, response.getMatchPercentage());
-            assertTrue(response.getUnmatchedTransactionPairs().isEmpty());
+            assertEquals(1, response.totalRecordsInFile1());
+            assertEquals(1, response.totalRecordsInFile2());
+            assertEquals(1, response.matchedRecords());
+            assertEquals(0, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(100.0, response.matchPercentage());
+            assertTrue(response.unmatchedTransactionPairs().isEmpty());
 
             verify(scoreService, times(1)).calculateScore(txn1, txn2);
         }
@@ -142,18 +142,18 @@ class ComparisonServiceImplTest {
 
             // Assert - Match statistics
             assertNotNull(response);
-            assertEquals(1, response.getTotalRecordsInFile1());
-            assertEquals(1, response.getTotalRecordsInFile2());
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(1, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
+            assertEquals(1, response.totalRecordsInFile1());
+            assertEquals(1, response.totalRecordsInFile2());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(1, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
 
             // Assert - Unmatched pairs
-            assertNotNull(response.getUnmatchedTransactionPairs());
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
+            assertNotNull(response.unmatchedTransactionPairs());
+            assertEquals(1, response.unmatchedTransactionPairs().size());
 
-            final UnmatchedTransactionPairDto pair = response.getUnmatchedTransactionPairs().get(0);
+            final UnmatchedTransactionPairDto pair = response.unmatchedTransactionPairs().get(0);
             assertNotNull(pair);
             assertNotNull(pair.getTransaction1());
             assertNotNull(pair.getTransaction2());
@@ -181,13 +181,13 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(1, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(1, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
 
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
-            final UnmatchedTransactionPairDto pair = response.getUnmatchedTransactionPairs().get(0);
+            assertEquals(1, response.unmatchedTransactionPairs().size());
+            final UnmatchedTransactionPairDto pair = response.unmatchedTransactionPairs().get(0);
             assertNotNull(pair.getTransaction1());
             assertNotNull(pair.getTransaction2());
         }
@@ -210,10 +210,10 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(1, response.getUnmatchedRecordsInFile1());
-            assertEquals(0.0, response.getMatchPercentage());
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(1, response.unmatchedRecordsInFile1());
+            assertEquals(0.0, response.matchPercentage());
+            assertEquals(1, response.unmatchedTransactionPairs().size());
         }
     }
 
@@ -234,16 +234,16 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(1, response.getTotalRecordsInFile1());
-            assertEquals(0, response.getTotalRecordsInFile2());
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(1, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
+            assertEquals(1, response.totalRecordsInFile1());
+            assertEquals(0, response.totalRecordsInFile2());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(1, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
 
             // Assert unmatched pair
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
-            final UnmatchedTransactionPairDto pair = response.getUnmatchedTransactionPairs().get(0);
+            assertEquals(1, response.unmatchedTransactionPairs().size());
+            final UnmatchedTransactionPairDto pair = response.unmatchedTransactionPairs().get(0);
             assertNotNull(pair);
             assertNotNull(pair.getTransaction1());
             assertNull(pair.getTransaction2());
@@ -265,16 +265,16 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(0, response.getTotalRecordsInFile1());
-            assertEquals(1, response.getTotalRecordsInFile2());
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(0, response.getUnmatchedRecordsInFile1());
-            assertEquals(1, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
+            assertEquals(0, response.totalRecordsInFile1());
+            assertEquals(1, response.totalRecordsInFile2());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(0, response.unmatchedRecordsInFile1());
+            assertEquals(1, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
 
             // Assert unmatched pair
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
-            final UnmatchedTransactionPairDto pair = response.getUnmatchedTransactionPairs().get(0);
+            assertEquals(1, response.unmatchedTransactionPairs().size());
+            final UnmatchedTransactionPairDto pair = response.unmatchedTransactionPairs().get(0);
             assertNotNull(pair);
             assertNull(pair.getTransaction1());
             assertNotNull(pair.getTransaction2());
@@ -302,24 +302,24 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(2, response.getTotalRecordsInFile1());
-            assertEquals(2, response.getTotalRecordsInFile2());
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(2, response.getUnmatchedRecordsInFile1());
-            assertEquals(2, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
+            assertEquals(2, response.totalRecordsInFile1());
+            assertEquals(2, response.totalRecordsInFile2());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(2, response.unmatchedRecordsInFile1());
+            assertEquals(2, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
 
             // Assert unmatched pairs - should have 4 total (2 from file1, 2 from file2)
-            assertEquals(4, response.getUnmatchedTransactionPairs().size());
+            assertEquals(4, response.unmatchedTransactionPairs().size());
 
             // Verify file1 unmatched pairs
-            long file1OnlyPairs = response.getUnmatchedTransactionPairs().stream()
+            long file1OnlyPairs = response.unmatchedTransactionPairs().stream()
                     .filter(p -> p.getTransaction1() != null && p.getTransaction2() == null)
                     .count();
             assertEquals(2, file1OnlyPairs);
 
             // Verify file2 unmatched pairs
-            long file2OnlyPairs = response.getUnmatchedTransactionPairs().stream()
+            long file2OnlyPairs = response.unmatchedTransactionPairs().stream()
                     .filter(p -> p.getTransaction1() == null && p.getTransaction2() != null)
                     .count();
             assertEquals(2, file2OnlyPairs);
@@ -361,25 +361,25 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(3, response.getTotalRecordsInFile1());
-            assertEquals(3, response.getTotalRecordsInFile2());
-            assertEquals(2, response.getMatchedRecords());
-            assertEquals(1, response.getUnmatchedRecordsInFile1());
-            assertEquals(1, response.getUnmatchedRecordsInFile2());
-            assertEquals(66.66666666666666, response.getMatchPercentage(), 0.0001);
+            assertEquals(3, response.totalRecordsInFile1());
+            assertEquals(3, response.totalRecordsInFile2());
+            assertEquals(2, response.matchedRecords());
+            assertEquals(1, response.unmatchedRecordsInFile1());
+            assertEquals(1, response.unmatchedRecordsInFile2());
+            assertEquals(66.66666666666666, response.matchPercentage(), 0.0001);
 
             // Assert unmatched pairs
-            assertEquals(2, response.getUnmatchedTransactionPairs().size());
+            assertEquals(2, response.unmatchedTransactionPairs().size());
 
             // Verify file1 unmatched
-            final boolean hasFile1Unmatched = response.getUnmatchedTransactionPairs().stream()
+            final boolean hasFile1Unmatched = response.unmatchedTransactionPairs().stream()
                     .anyMatch(p -> p.getTransaction1() != null &&
                             p.getTransaction1().getTransactionID().equals(unmatchedFile1.getTransactionID()) &&
                             p.getTransaction2() == null);
             assertTrue(hasFile1Unmatched);
 
             // Verify file2 unmatched
-            final boolean hasFile2Unmatched = response.getUnmatchedTransactionPairs().stream()
+            final boolean hasFile2Unmatched = response.unmatchedTransactionPairs().stream()
                     .anyMatch(p -> p.getTransaction2() != null &&
                             p.getTransaction2().getTransactionID().equals(unmatchedFile2.getTransactionID()) &&
                             p.getTransaction1() == null);
@@ -410,16 +410,16 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(2, response.getTotalRecordsInFile1());
-            assertEquals(2, response.getTotalRecordsInFile2());
-            assertEquals(1, response.getMatchedRecords());
-            assertEquals(1, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(50.0, response.getMatchPercentage());
+            assertEquals(2, response.totalRecordsInFile1());
+            assertEquals(2, response.totalRecordsInFile2());
+            assertEquals(1, response.matchedRecords());
+            assertEquals(1, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(50.0, response.matchPercentage());
 
             // Assert unmatched pairs
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
-            final UnmatchedTransactionPairDto pair = response.getUnmatchedTransactionPairs().get(0);
+            assertEquals(1, response.unmatchedTransactionPairs().size());
+            final UnmatchedTransactionPairDto pair = response.unmatchedTransactionPairs().get(0);
             assertNotNull(pair);
             assertNotNull(pair.getTransaction1());
             assertNotNull(pair.getTransaction2());
@@ -446,13 +446,13 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(0, response.getTotalRecordsInFile1());
-            assertEquals(0, response.getTotalRecordsInFile2());
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(0, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
-            assertTrue(response.getUnmatchedTransactionPairs().isEmpty());
+            assertEquals(0, response.totalRecordsInFile1());
+            assertEquals(0, response.totalRecordsInFile2());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(0, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
+            assertTrue(response.unmatchedTransactionPairs().isEmpty());
 
             verifyNoInteractions(scoreService);
         }
@@ -471,13 +471,13 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(0, response.getTotalRecordsInFile1());
-            assertEquals(1, response.getTotalRecordsInFile2());
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(0, response.getUnmatchedRecordsInFile1());
-            assertEquals(1, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
+            assertEquals(0, response.totalRecordsInFile1());
+            assertEquals(1, response.totalRecordsInFile2());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(0, response.unmatchedRecordsInFile1());
+            assertEquals(1, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
+            assertEquals(1, response.unmatchedTransactionPairs().size());
 
             verifyNoInteractions(scoreService);
         }
@@ -496,13 +496,13 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(1, response.getTotalRecordsInFile1());
-            assertEquals(0, response.getTotalRecordsInFile2());
-            assertEquals(0, response.getMatchedRecords());
-            assertEquals(1, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(0.0, response.getMatchPercentage());
-            assertEquals(1, response.getUnmatchedTransactionPairs().size());
+            assertEquals(1, response.totalRecordsInFile1());
+            assertEquals(0, response.totalRecordsInFile2());
+            assertEquals(0, response.matchedRecords());
+            assertEquals(1, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(0.0, response.matchPercentage());
+            assertEquals(1, response.unmatchedTransactionPairs().size());
 
             verifyNoInteractions(scoreService);
         }
@@ -534,13 +534,13 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(10, response.getTotalRecordsInFile1());
-            assertEquals(10, response.getTotalRecordsInFile2());
-            assertEquals(3, response.getMatchedRecords());
-            assertEquals(7, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(30.0, response.getMatchPercentage());
-            assertEquals(7, response.getUnmatchedTransactionPairs().size());
+            assertEquals(10, response.totalRecordsInFile1());
+            assertEquals(10, response.totalRecordsInFile2());
+            assertEquals(3, response.matchedRecords());
+            assertEquals(7, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(30.0, response.matchPercentage());
+            assertEquals(7, response.unmatchedTransactionPairs().size());
 
             verify(scoreService, times(10)).calculateScore(any(), any());
         }
@@ -571,13 +571,13 @@ class ComparisonServiceImplTest {
 
             // Assert
             assertNotNull(response);
-            assertEquals(1000, response.getTotalRecordsInFile1());
-            assertEquals(1000, response.getTotalRecordsInFile2());
-            assertEquals(1000, response.getMatchedRecords());
-            assertEquals(0, response.getUnmatchedRecordsInFile1());
-            assertEquals(0, response.getUnmatchedRecordsInFile2());
-            assertEquals(100.0, response.getMatchPercentage());
-            assertTrue(response.getUnmatchedTransactionPairs().isEmpty());
+            assertEquals(1000, response.totalRecordsInFile1());
+            assertEquals(1000, response.totalRecordsInFile2());
+            assertEquals(1000, response.matchedRecords());
+            assertEquals(0, response.unmatchedRecordsInFile1());
+            assertEquals(0, response.unmatchedRecordsInFile2());
+            assertEquals(100.0, response.matchPercentage());
+            assertTrue(response.unmatchedTransactionPairs().isEmpty());
 
             verify(scoreService, times(1000)).calculateScore(any(), any());
         }
@@ -603,13 +603,13 @@ class ComparisonServiceImplTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals(2, response.getTotalRecordsInFile1());
-        assertEquals(2, response.getTotalRecordsInFile2());
-        assertEquals(2, response.getMatchedRecords());
-        assertEquals(0, response.getUnmatchedRecordsInFile1());
-        assertEquals(0, response.getUnmatchedRecordsInFile2());
-        assertEquals(100.0, response.getMatchPercentage());
-        assertTrue(response.getUnmatchedTransactionPairs().isEmpty());
+        assertEquals(2, response.totalRecordsInFile1());
+        assertEquals(2, response.totalRecordsInFile2());
+        assertEquals(2, response.matchedRecords());
+        assertEquals(0, response.unmatchedRecordsInFile1());
+        assertEquals(0, response.unmatchedRecordsInFile2());
+        assertEquals(100.0, response.matchPercentage());
+        assertTrue(response.unmatchedTransactionPairs().isEmpty());
 
         verify(scoreService, times(2)).calculateScore(any(), any());
     }
@@ -662,16 +662,16 @@ class ComparisonServiceImplTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals(2, response.getTotalRecordsInFile1());
-        assertEquals(2, response.getTotalRecordsInFile2());
-        assertEquals(1, response.getMatchedRecords());
-        assertEquals(1, response.getUnmatchedRecordsInFile1());
-        assertEquals(0, response.getUnmatchedRecordsInFile2());
-        assertEquals(50.0, response.getMatchPercentage());
+        assertEquals(2, response.totalRecordsInFile1());
+        assertEquals(2, response.totalRecordsInFile2());
+        assertEquals(1, response.matchedRecords());
+        assertEquals(1, response.unmatchedRecordsInFile1());
+        assertEquals(0, response.unmatchedRecordsInFile2());
+        assertEquals(50.0, response.matchPercentage());
 
         // Verify unmatched pairs
-        assertEquals(1, response.getUnmatchedTransactionPairs().size());
-        final UnmatchedTransactionPairDto unmatchedPair = response.getUnmatchedTransactionPairs().get(0);
+        assertEquals(1, response.unmatchedTransactionPairs().size());
+        final UnmatchedTransactionPairDto unmatchedPair = response.unmatchedTransactionPairs().get(0);
         assertNotNull(unmatchedPair.getTransaction1());
         assertNotNull(unmatchedPair.getTransaction2());
         assertEquals(new TransactionId("TXN001").toString(), unmatchedPair.getTransaction1().getTransactionID().toString());
@@ -704,18 +704,18 @@ class ComparisonServiceImplTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals(3, response.getTotalRecordsInFile1());
-        assertEquals(1, response.getTotalRecordsInFile2());
-        assertEquals(0, response.getMatchedRecords()); // Size mismatch - all treated as unmatched
-        assertEquals(3, response.getUnmatchedRecordsInFile1());
-        assertEquals(0, response.getUnmatchedRecordsInFile2());
-        assertEquals(0.0, response.getMatchPercentage());
+        assertEquals(3, response.totalRecordsInFile1());
+        assertEquals(1, response.totalRecordsInFile2());
+        assertEquals(0, response.matchedRecords()); // Size mismatch - all treated as unmatched
+        assertEquals(3, response.unmatchedRecordsInFile1());
+        assertEquals(0, response.unmatchedRecordsInFile2());
+        assertEquals(0.0, response.matchPercentage());
 
         // Verify unmatched pairs - should have 3 from file1
-        assertEquals(3, response.getUnmatchedTransactionPairs().size());
+        assertEquals(3, response.unmatchedTransactionPairs().size());
 
         // All should be file1-only (no file2 match)
-        response.getUnmatchedTransactionPairs().forEach(pair -> {
+        response.unmatchedTransactionPairs().forEach(pair -> {
             assertNotNull(pair.getTransaction1());
             assertNull(pair.getTransaction2());
             assertEquals(new TransactionId("TXN001").toString(), pair.getTransaction1().getTransactionID().toString());
@@ -747,17 +747,17 @@ class ComparisonServiceImplTest {
 
         // Assert
         assertNotNull(response);
-        assertEquals(1, response.getTotalRecordsInFile1());
-        assertEquals(3, response.getTotalRecordsInFile2());
-        assertEquals(0, response.getMatchedRecords()); // Size mismatch - all treated as unmatched
-        assertEquals(1, response.getUnmatchedRecordsInFile1());
-        assertEquals(0, response.getUnmatchedRecordsInFile2()); // File2 extras aren't counted in unmatched from file2
-        assertEquals(0.0, response.getMatchPercentage());
+        assertEquals(1, response.totalRecordsInFile1());
+        assertEquals(3, response.totalRecordsInFile2());
+        assertEquals(0, response.matchedRecords()); // Size mismatch - all treated as unmatched
+        assertEquals(1, response.unmatchedRecordsInFile1());
+        assertEquals(0, response.unmatchedRecordsInFile2()); // File2 extras aren't counted in unmatched from file2
+        assertEquals(0.0, response.matchPercentage());
 
         // Verify unmatched pairs - should have 1 from file1
-        assertEquals(1, response.getUnmatchedTransactionPairs().size());
+        assertEquals(1, response.unmatchedTransactionPairs().size());
 
-        final UnmatchedTransactionPairDto pair = response.getUnmatchedTransactionPairs().get(0);
+        final UnmatchedTransactionPairDto pair = response.unmatchedTransactionPairs().get(0);
         assertNotNull(pair.getTransaction1());
         assertNull(pair.getTransaction2());
         assertEquals(new TransactionId("TXN002").toString(), pair.getTransaction1().getTransactionID().toString());
