@@ -27,6 +27,7 @@ public class TransactionUtil {
                 null
         );
     }
+
     // Helper methods to create test transactions
     public static TransactionDto createTransaction(String id, Double amount, ZonedDateTime date) {
         return new TransactionDto(
