@@ -46,7 +46,7 @@ function showError(message) {
 }
 
 function displayResults(data) {
-    // Display summary cards
+    // Display results
     const summaryCards = document.getElementById('summaryCards');
     summaryCards.innerHTML = `
         <div class="summary-card">

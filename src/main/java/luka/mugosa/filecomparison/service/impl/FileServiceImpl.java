@@ -32,12 +32,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @Service
 public class FileServiceImpl implements FileService {
 
     private static final char CSV_SEPARATOR = ',';
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+
+    private static final Executor VIRTUAL_THREAD_EXECUTOR = Executors.newVirtualThreadPerTaskExecutor();
 
     public List<TransactionDto> parseFile(final String path) {
         logger.info("Starting file parsing for path: {}", path);
@@ -349,11 +353,11 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public CompletableFuture<List<TransactionDto>> parseFileAsync(String path) {
-        return CompletableFuture.supplyAsync(() -> parseFile(path));
+        return CompletableFuture.supplyAsync(() -> parseFile(path), VIRTUAL_THREAD_EXECUTOR);
     }
 
     @Override
     public CompletableFuture<List<TransactionDto>> parseFileAsync(MultipartFile file) {
-        return CompletableFuture.supplyAsync(() -> parseFile(file));
+        return CompletableFuture.supplyAsync(() -> parseFile(file), VIRTUAL_THREAD_EXECUTOR);
     }
 }
